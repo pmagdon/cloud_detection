@@ -9,7 +9,9 @@ def import_image(file, band, dict):
     print("Dictionary updated")
     return 1
 
-tmp = import_image('clip1.tif',1,dict)
+dictionary = {}
+
+tmp = import_image('clip1.tif',1,dictionary)
 
 
 
