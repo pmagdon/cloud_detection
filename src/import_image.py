@@ -10,7 +10,3 @@ def import_image(file, band, dic):
     dic.update({date: imb})
     print("Dictionary updated")
 
-dictionary = {}
-
-import_image('clip1.tif', 1, dictionary)
-import_image('clip2.tif', 1, dictionary)
