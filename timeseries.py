@@ -24,16 +24,26 @@ def extract_timeseries(dic):
 
 def extract_timeseries(dic):
     # the same as the last one, but also prints class
-    # I tried to integrate here the function get_keys,
-    # but function ignores this part
+    # and dictionary keys
     row = next(len(i) for i in dic.values()) + 1
     col = next(i.shape[1] for i in dic.values()) + 1
     for x in range(0, row):
         for y in range(0, col):
-            print([value[x, y] for value in dic.values()])
+            print([values[x, y] for values in dic.values()])
             print(type([value[x, y] for value in dic.values()]))
-        for i in range(0, row*col+1):
             print(dic.keys())
+
+def extract_timeseries(dic):
+    # the same as the last one, but also prints class
+    # and dictionary keys
+    row = next(len(i) for i in dic.values()) + 1
+    col = next(i.shape[1] for i in dic.values()) + 1
+    for x in range(0, row):
+        for y in range(0, col):
+            print([values[x, y] for values in dic.values()])
+            #print(type([value[x, y] for value in dic.values()]))
+            print(dic.keys())
+
 
 def get_keys(dic):
     # prints the keys of the dictionary (in this case the date info)
