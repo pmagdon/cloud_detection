@@ -13,7 +13,7 @@ def extract_timeseries(dic, row, column):
 
 timeseries = extract_timeseries(dictionary, 0, 0)
 
-df = pd.DataFrame(timeseries, columns = ['dates', 'values']) # creates a dataframe
+df = pd.DataFrame(timeseries) # creates a dataframe
 df.plot(x = "dates", y = "values") # plot time series
 
 

@@ -1,5 +1,4 @@
 import numpy as np
-from src.import_image import import_image
 
 # 1. Test: for loop to extract time series for all pixel values and put it to a list
 
@@ -57,6 +56,3 @@ def get_keys(dic):
     col = next(i.shape[1] for i in dic.values())
     for i in range(0, row * col + 1):
         print(dic.keys())
-
-
-
