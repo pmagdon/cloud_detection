@@ -1,5 +1,34 @@
 import numpy as np
 
+
+#  Run
+
+image_files = [] # create an empty list
+
+# run first_import function before you continue
+
+first_import("data/clip1.tif") # maybe here we can also use a loop and do the first import
+                               # for all the images in a folder
+first_import("data/clip2.tif")
+
+dictionary = {}
+
+# run import_image function before you continue
+
+for x in image_files: # reads all the image files in the list
+    import_image(x, 3, dictionary)
+
+# run extract_timeseries function before you continue
+
+timeseries = extract_timeseries(dictionary, 0, 0)
+
+df = pd.DataFrame(timeseries) # creates a dataframe
+df.plot(x = "dates", y = "values") # plot time series
+
+
+
+########################  Test #############################
+
 # 1. Test: for loop to extract time series for all pixel values and put it to a list
 
 timeseries_all = []
@@ -56,3 +85,23 @@ def get_keys(dic):
     col = next(i.shape[1] for i in dic.values())
     for i in range(0, row * col + 1):
         print(dic.keys())
+
+
+# 4. Run
+
+image_files = [] # create an empty list
+
+# run first_import function before you continue
+
+first_import("data/clip1.tif") # maybe here we can also use a loop and do the first import
+                               # for all the images in a folder
+first_import("data/clip2.tif")
+
+dictionary = {}
+
+# run import image function before you continue
+
+for x in image_files: # reads all the image files in the list
+    import_image(x, 3, dictionary)
+
+#

@@ -1,6 +1,4 @@
 import pandas as pd
-from datetime import datetime
-
 
 
 def extract_timeseries(dic, row, column):
@@ -10,10 +8,4 @@ def extract_timeseries(dic, row, column):
     keys = [key for key in dic.keys()]
     d = {"dates": keys, "values":values}
     return d
-
-timeseries = extract_timeseries(dictionary, 0, 0)
-
-df = pd.DataFrame(timeseries) # creates a dataframe
-df.plot(x = "dates", y = "values") # plot time series
-
 
