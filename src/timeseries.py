@@ -1,4 +1,3 @@
-import pandas as pd
 
 
 def extract_timeseries(dic, row, column):

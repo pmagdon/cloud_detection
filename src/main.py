@@ -1,5 +1,5 @@
 import numpy as np
-
+import pandas as pd
 
 #  Run
 
@@ -21,6 +21,8 @@ for x in image_files: # reads all the image files in the list
 # run extract_timeseries function before you continue
 
 timeseries = extract_timeseries(dictionary, 0, 0)
+# like this, I had to run this function for each pixel in order to have all df to test with mtcd
+# Maybe I can put this inside of the mtcd function
 
 df = pd.DataFrame(timeseries) # creates a dataframe
 df.plot(x = "dates", y = "values") # plot time series
