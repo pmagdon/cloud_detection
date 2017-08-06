@@ -21,12 +21,14 @@ for x in image_files: # reads all the image files in the list
 # run extract_timeseries function before you continue
 
 timeseries = extract_timeseries(dictionary, 0, 0)
-# like this, I had to run this function for each pixel in order to have all df to test with mtcd
-# Maybe I can put this inside of the mtcd function
 
 df = pd.DataFrame(timeseries) # creates a dataframe
 df.plot(x = "dates", y = "values") # plot time series
 
+
+for x in range(0,3):
+    for y in range(0,3):
+        print(mtcd(dictionary, x, y))
 
 
 ########################  Test #############################
@@ -89,21 +91,19 @@ def get_keys(dic):
         print(dic.keys())
 
 
-# 4. Run
+# 4. Test: alte mtcd function: time series defined before and outside of the mtcd function definition
+def mtcd(dataframe):
 
-image_files = [] # create an empty list
+    refl_blue_dayD = dataframe["values"][0] # extracts the pixel value of an image
+    refl_blue_dayref = dataframe["values"][1] # extracts the pixel value of the reference image
+    dayD = datetime.datetime.strptime(dataframe["dates"][0], "%Y-%m-%d") # extracts the date value
+    dayref = datetime.datetime.strptime(dataframe["dates"][1], "%Y-%m-%d")# extracts the data value of the reference image
 
-# run first_import function before you continue
+    refl_red_dayD = data_frame["values"][0]
+    refl_red_dayref = data_frame["values"][1]
 
-first_import("data/clip1.tif") # maybe here we can also use a loop and do the first import
-                               # for all the images in a folder
-first_import("data/clip2.tif")
-
-dictionary = {}
-
-# run import image function before you continue
-
-for x in image_files: # reads all the image files in the list
-    import_image(x, 3, dictionary)
-
-#
+    if abs(refl_blue_dayD - refl_blue_dayref) > 0.03*(1+abs(dayD - dayref).total_seconds()/(60*60*24)/30) and \
+                    abs(refl_red_dayD - refl_red_dayref) > 1.5 * (abs(dayD - dayref).total_seconds() / (60 * 60 * 24)):
+        return "change"
+    else:
+        return "no change"
