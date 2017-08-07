@@ -3,20 +3,20 @@ from dateutil.parser import parse
 import matplotlib.pyplot as plt
 import numpy as np
 
-#Test
-#im1 = rasterio.open('clip1.tif') # imports image
-#im1b1 = im1.read(1) # reads band 1
-#date1 = im1.tags()['Acquisition_DateTime'] # reads date of the image
-#im2 = rasterio.open('clip2.tif')
-#im2b1 = im2.read(1)
-#date2 = im2.tags() ['Acquisition_DateTime']
-#print(type(im1.tags()['Acquisition_DateTime'])) # gives class of date
+# Test
+# im1 = rasterio.open('clip1.tif') # imports image
+# im1b1 = im1.read(1) # reads band 1
+# date1 = im1.tags()['Acquisition_DateTime'] # reads date of the image
+# im2 = rasterio.open('clip2.tif')
+# im2b1 = im2.read(1)
+# date2 = im2.tags() ['Acquisition_DateTime']
+# print(type(im1.tags()['Acquisition_DateTime'])) # gives class of date
 
-#date1 = parse(date1) # converts class string to datetime
-#date2 = parse(date2)
-#print(type(date1))
+# date1 = parse(date1) # converts class string to datetime
+# date2 = parse(date2)
+# print(type(date1))
 
-#dict = {'2015/5/10': im1b1, '2015/5/15' : im2b1}
+# dict = {'2015/5/10': im1b1, '2015/5/15' : im2b1}
 
 def import_image(file, band, dict):
     # "Reads the image file, takes the values of the selected band

@@ -11,24 +11,34 @@ first_import("data/clip1.tif") # maybe here we can also use a loop and do the fi
                                # for all the images in a folder
 first_import("data/clip2.tif")
 
-dictionary = {}
+dictionary_blue = {}
+dictionary_red = {}
 
 # run import_image function before you continue
 
-for x in image_files: # reads all the image files in the list
-    import_image(x, 3, dictionary)
+for images in image_files:
+    # reads all the image files in the list
+    import_image(images, 3, dictionary_blue)   # blue band
+
+for images in image_files:
+    # reads all the image files in the list
+    import_image(images, 1, dictionary_red)   # red band
 
 # run extract_timeseries function before you continue
 
-timeseries = extract_timeseries(dictionary, 0, 0)
+timeseries = extract_timeseries(dictionary_blue, 0, 0)
 
 df = pd.DataFrame(timeseries) # creates a dataframe
 df.plot(x = "dates", y = "values") # plot time series
 
+# run mtcd function before you continue
 
-for x in range(0,3):
-    for y in range(0,3):
-        print(mtcd(dictionary, x, y))
+row = next(len(i) for i in dictionary_blue.values())
+column = next(i.shape[1] for i in dictionary_blue.values())
+
+for row in range(0,row):
+    for column in range(0,column):
+        print(mtcd(dictionary, row, column))
 
 
 ########################  Test #############################
