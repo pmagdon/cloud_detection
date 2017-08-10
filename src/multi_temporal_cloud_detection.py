@@ -1,5 +1,5 @@
 import datetime
-from timeeseries import extract_timeseries # why this is not working?
+from src.timeseries import extract_timeseries# why this is not working?
 import pandas as pd
 
 
@@ -19,12 +19,12 @@ def mtcd(dic_blue, dic_red, row, column):
     dayd = datetime.datetime.strptime(data_frame_blue["dates"][0], "%Y-%m-%d")  # extracts the date value
     dayref = datetime.datetime.strptime(data_frame_blue["dates"][1], "%Y-%m-%d")  # extracts data value of reference image
 
-    if abs(refl_blue_dayd - refl_blue_dayref) > 0.03 * (
-        1 + abs(dayd - dayref).total_seconds() / (60 * 60 * 24) / 30) and \
-            abs(refl_red_dayd - refl_red_dayref) < 1.5 * (abs(dayd - dayref).total_seconds() / (60 * 60 * 24)):
-        return "change"
+    if abs(refl_blue_dayd - refl_blue_dayref) > 3 * (
+        1 + (dayd - dayref).total_seconds() / (60 * 60 * 24) / 30) and \
+            (refl_red_dayd - refl_red_dayref) < 150 * (abs(dayd - dayref).total_seconds() / (60 * 60 * 24)):
+        return True
     else:
-        return "no change"
+        return False
 
 
 # why absolute values for difference? in the case that we have non cloud-cloud: that should be also noted as change

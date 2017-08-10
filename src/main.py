@@ -1,26 +1,29 @@
 import numpy as np
 import pandas as pd
-
+from src.first_import import first_import
+from src.import_image import import_image
+from src.timeseries import extract_timeseries
+from src.multi_temporal_cloud_detection import mtcd
 #  Run
 
-image_files = [] # create an empty list
+image_set = [] # create an empty list
 
 # run first_import function before you continue
 
-first_import("data/clip1.tif") # maybe here we can also use a loop and do the first import
+first_import("data/clip1.tif", image_set) # maybe here we can also use a loop and do the first import
                                # for all the images in a folder
-first_import("data/clip2.tif")
+first_import("data/clip2.tif", image_set)
 
 dictionary_blue = {}
 dictionary_red = {}
 
 # run import_image function before you continue
 
-for images in image_files:
+for images in image_set:
     # reads all the image files in the list
     import_image(images, 3, dictionary_blue)   # blue band
 
-for images in image_files:
+for images in image_set:
     # reads all the image files in the list
     import_image(images, 1, dictionary_red)   # red band
 
@@ -36,9 +39,11 @@ df.plot(x = "dates", y = "values") # plot time series
 row = next(len(i) for i in dictionary_blue.values())
 column = next(i.shape[1] for i in dictionary_blue.values())
 
+output = [] # noch umwandeln in array mit derselben dimension reshape oder so
+
 for row in range(0,row):
     for column in range(0,column):
-        print(mtcd(dictionary, row, column))
+        output.append(mtcd(dictionary_blue, dictionary_red,  row, column))
 
 
 ########################  Test #############################
