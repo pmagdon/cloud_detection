@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import rasterio
 from src.first_import import first_import
 from src.import_image import import_image
 from src.timeseries import extract_timeseries
@@ -8,24 +9,15 @@ from src.multi_temporal_cloud_detection import mtcd
 
 image_set = [] # create an empty list
 
-# run first_import function before you continue
-
 first_import("data/clip1.tif", image_set) # maybe here we can also use a loop and do the first import
                                # for all the images in a folder
 first_import("data/clip2.tif", image_set)
 
-dictionary_blue = {}
-dictionary_red = {}
-
-# run import_image function before you continue
+dictionary_blue_red = {"blue":{}, "red":{}}
 
 for images in image_set:
     # reads all the image files in the list
-    import_image(images, 3, dictionary_blue)   # blue band
-
-for images in image_set:
-    # reads all the image files in the list
-    import_image(images, 1, dictionary_red)   # red band
+    import_image(images, 3, 1, dictionary_blue_red)
 
 # run extract_timeseries function before you continue
 
