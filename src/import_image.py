@@ -7,7 +7,7 @@ def import_image(file, blue_band,  red_band, dic):
     im_blue_band = im.read(blue_band)
     im_red_band = im.read(red_band)
     date = im.tags()['Acquisition_DateTime'][0:10]
-    dictionary_blue_red["blue"].update({date: im_blue_band})
-    dictionary_blue_red["red"].update({date: im_red_band})
+    dic["blue"].update({date: im_blue_band})
+    dic["red"].update({date: im_red_band})
     print("Dictionary updated")
 
