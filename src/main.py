@@ -1,9 +1,9 @@
-import numpy as np
 import pandas as pd
 from src.first_import import first_import
 from src.import_image import import_image
 from src.timeseries import extract_timeseries
-from src.multi_temporal_cloud_detection import mtcd
+from src.multi_temporal_cloud_detection import mtcd_test1
+
 #  Run
 
 image_set = [] # create an empty list
