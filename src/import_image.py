@@ -1,3 +1,4 @@
+import rasterio
 
 
 def import_image(file, blue_band,  red_band, dic):
