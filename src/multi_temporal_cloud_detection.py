@@ -1,14 +1,15 @@
 import datetime
 from src.timeseries import extract_timeseries
 import pandas as pd
+import numpy as np
 
 
-
-def mtcd_test1(dic, row, column):
+# Test 1 #
+def mtcd_test1(dic, row, col):
     # test if the temporal variation of reflectance on the blue band is big compared to a threshold
     # Big increase indicates cloud
 
-    time_series_blue = extract_timeseries(dic, "blue", row, column)
+    time_series_blue = extract_timeseries(dic, "blue", row, col)
     data_frame_blue = pd.DataFrame(time_series_blue)  # creates a data frame
 
     refl_blue_dayref = data_frame_blue["values"][0]  # extracts the pixel value of the reference image
@@ -24,8 +25,11 @@ def mtcd_test1(dic, row, column):
         return False
 
 
-def mtcd_test2(dic, row, column):
-    time_series_red = extract_timeseries(dic, "red", row, column)
+# Test 2 #
+def mtcd_test2(dic, row, col):
+    # test if the variation of reflectance in the red band is much greater than in the blue band
+
+    time_series_red = extract_timeseries(dic, "red", row, col)
     data_frame_red = pd.DataFrame(time_series_red)  # creates a data frame
 
     refl_red_dayref = data_frame_red["values"][0]  # extracts the pixel value of the reference image
@@ -35,14 +39,50 @@ def mtcd_test2(dic, row, column):
     dayref = datetime.datetime.strptime(data_frame_red["dates"][1],
                                         "%Y-%m-%d")  # extracts data value of reference image
 
-    if (refl_red_dayd - refl_red_dayref) > 150 * (dayd - dayref).total_seconds() / (60 * 60 * 24)
+    if (refl_red_dayd - refl_red_dayref) > 150 * (dayd - dayref).total_seconds() / (60 * 60 * 24):
         return False
     else:
         return True
 
-def mtcd_test3
 
-# Test 2: A pixel that verifies equation 1 is finally not flagged as cloudy if any of the following 2 conditions is true:
-# if the variation of reflectance in the red band is much greater than in the blue band
-# Test 3: if the reflectance in the pixel neighborhood are well correlated with those of the same neighborhood in one of
-#  the ten images acquired before the date (or maybe just with 2: before and after)
+# Test 3 #
+def mtcd_test3(dic, band, row, col):
+    # test if the reflectance in the pixel neighborhood is well correlated with those of the same neighborhood in
+    # another image
+    up = row - 1
+    down = row + 1
+    right = col + 1
+    left = col - 1
+
+    date_ref = [key for key in dic[band].keys()][0]
+    date = [key for key in dic[band].keys()][1]
+
+    a = dic[band][date][up, left]
+    b = dic[band][date][up, col]
+    c = dic[band][date][up, right]
+    d = dic[band][date][row, left]
+    e = dic[band][date][row, col]
+    f = dic[band][date][row, right]
+    g = dic[band][date][down, left]
+    h = dic[band][date][down, col]
+    i = dic[band][date][down, right]
+
+    A = dic[band][date_ref][up, left]
+    B = dic[band][date_ref][up, col]
+    C = dic[band][date_ref][up, right]
+    D = dic[band][date_ref][row, left]
+    E = dic[band][date_ref][row, col]
+    F = dic[band][date_ref][row, right]
+    G = dic[band][date_ref][down, left]
+    H = dic[band][date_ref][down, col]
+    I = dic[band][date_ref][down, right]
+
+    array1 = np.array([[a, b, c], [d, e, f], [g, h, i]])
+    array2 = np.array([[A, B, C], [D, E, F], [G, H, I]])
+
+    cov = np.mean((array1 - array1.mean()) * (array2 - array2.mean()))
+    max_cov = array1.std() * array2.std()
+    result = cov / max_cov
+    return result
+
+
