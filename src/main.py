@@ -2,7 +2,7 @@ import pandas as pd
 from src.first_import import first_import
 from src.import_image import import_image
 from src.timeseries import extract_timeseries
-from src.multi_temporal_cloud_detection import mtcd_test1
+from src.multi_temporal_cloud_detection import mtcd_test1, mtcd_test2, mtcd_test3
 
 #  Run
 
@@ -12,7 +12,7 @@ first_import("data/clip1.tif", image_set) # maybe here we can also use a loop an
                                # for all the images in a folder
 first_import("data/clip2.tif", image_set)
 
-dictionary_blue_red = {"blue":{}, "red":{}}
+dictionary_blue_red = {"blue": {}, "red": {}}
 
 for images in image_set:
     # reads all the image files in the list
