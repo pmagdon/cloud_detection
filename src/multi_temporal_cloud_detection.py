@@ -57,7 +57,58 @@ def mtcd_test3(dic, band, row, col):
     date_ref = [key for key in dic[band].keys()][0]
     date = [key for key in dic[band].keys()][1]
 
-    if row == 0:
+    lim_row = dic[band][date].shape[0] - 1
+    lim_col = dic[band][date].shape[1] - 1
+
+    if row == 0 and col == 0:
+        e = dic[band][date][row, col]
+        f = dic[band][date][row, right]
+        h = dic[band][date][down, col]
+        i = dic[band][date][down, right]
+        E = dic[band][date_ref][row, col]
+        F = dic[band][date_ref][row, right]
+        H = dic[band][date_ref][down, col]
+        I = dic[band][date_ref][down, right]
+        array1 = np.array([[e, f], [h, i]])
+        array2 = np.array([[E, F], [H, I]])
+
+    elif row == 0 and col == lim_col:
+        d = dic[band][date][row, left]
+        e = dic[band][date][row, col]
+        g = dic[band][date][down, left]
+        h = dic[band][date][down, col]
+        D = dic[band][date_ref][row, left]
+        E = dic[band][date_ref][row, col]
+        G = dic[band][date_ref][down, left]
+        H = dic[band][date_ref][down, col]
+        array1 = np.array([[d, e], [g, h]])
+        array2 = np.array([[D, E], [G, H]])
+
+    elif row == lim_row and col == 0:
+        b = dic[band][date][up, col]
+        c = dic[band][date][up, right]
+        e = dic[band][date][row, col]
+        f = dic[band][date][row, right]
+        B = dic[band][date_ref][up, col]
+        C = dic[band][date_ref][up, right]
+        E = dic[band][date_ref][row, col]
+        F = dic[band][date_ref][row, right]
+        array1 = np.array([[ b, c], [ e, f]])
+        array2 = np.array([[ B, C], [ E, F]])
+
+    elif row == lim_row and col == lim_col:
+        a = dic[band][date][up, left]
+        b = dic[band][date][up, col]
+        d = dic[band][date][row, left]
+        e = dic[band][date][row, col]
+        A = dic[band][date_ref][up, left]
+        B = dic[band][date_ref][up, col]
+        D = dic[band][date_ref][row, left]
+        E = dic[band][date_ref][row, col]
+        array1 = np.array([[a, b], [d, e]])
+        array2 = np.array([[A, B], [D, E]])
+
+    elif row == 0:
         d = dic[band][date][row, left]
         e = dic[band][date][row, col]
         f = dic[band][date][row, right]
