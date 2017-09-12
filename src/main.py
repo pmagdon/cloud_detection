@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from src.first_import import first_import
 from src.import_image import import_image
 from src.timeseries import extract_timeseries
@@ -35,3 +36,9 @@ ncol = next(i.shape[1] for i in dictionary_blue_red["blue"].values())
 for row in range(0,nrow):
     for column in range(0,ncol):
         output.append(mtcd_test1(dictionary_blue_red, row , column))
+
+output = [mtcd(dictionary_blue_red, "blue", r, c)
+          for r in range(0, nrow)
+          for c in range(0, ncol)]
+
+output2 = np.asarray(output).reshape(nrow, ncol)

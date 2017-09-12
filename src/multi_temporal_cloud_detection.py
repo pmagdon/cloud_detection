@@ -198,6 +198,22 @@ def mtcd_test3(dic, band, row, col):
     cov = np.mean((array1 - array1.mean()) * (array2 - array2.mean()))
     max_cov = array1.std() * array2.std()
     result = cov / max_cov
-    return result
+    if result > 0.5:
+        return True
+    else:
+        return False
+
+
+def mtcd(dic, band, row, col):
+    # check the result of the 3 tests and returns
+    # True when cloud, False when not cloud
+    Test_1 = mtcd_test1(dic, row, col)
+    Test_2 = mtcd_test2(dic, row, col)
+    Test_3 = mtcd_test3(dic, band, row, col)
+    if Test_1 == True and Test_2 == False and Test_3 == False:
+        return True
+    else:
+        return False
+
 
 
