@@ -124,7 +124,7 @@ def mtcd_test3(dic, band, row, col):
         array1 = np.array([[d, e, f], [g, h, i]])
         array2 = np.array([[D, E, F], [G, H, I]])
 
-    elif row == 526:
+    elif row == lim_row:
         a = dic[band][date][up, left]
         b = dic[band][date][up, col]
         c = dic[band][date][up, right]
@@ -156,7 +156,7 @@ def mtcd_test3(dic, band, row, col):
         array1 = np.array([[b, c], [e, f], [h, i]])
         array2 = np.array([[B, C], [E, F], [H, I]])
 
-    elif col == 718:
+    elif col == lim_col:
         a = dic[band][date][up, left]
         b = dic[band][date][up, col]
         d = dic[band][date][row, left]

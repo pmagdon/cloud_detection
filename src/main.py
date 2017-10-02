@@ -3,7 +3,7 @@ import numpy as np
 from src.first_import import first_import
 from src.import_image import import_image
 from src.timeseries import extract_timeseries
-from src.multi_temporal_cloud_detection import mtcd_test1, mtcd_test2, mtcd_test3
+from src.multi_temporal_cloud_detection import mtcd_test1, mtcd_test2, mtcd_test3, mtcd
 
 #  Run
 
@@ -22,23 +22,26 @@ for images in image_set:
 # run extract_timeseries function before you continue
 
 timeseries = extract_timeseries(dictionary_blue_red, "blue", 0, 0)
+time_series_blue = extract_timeseries(dictionary_blue_red, "blue", 0, 0)
+data_frame_blue = pd.DataFrame(time_series_blue)  # creates a data frame
 
-df = pd.DataFrame(timeseries) # creates a dataframe
-df.plot(x = "dates", y = "values") # plot time series
+df = pd.DataFrame(timeseries)  # creates a dataframe
+df.plot(x="dates", y="values")  # plot time series
 
 # run mtcd function before you continue
 
-output = [] # noch umwandeln in array mit derselben dimension reshape oder so
+output = []  # noch umwandeln in array mit derselben dimension reshape oder so
 
 nrow = next(i.shape[0] for i in dictionary_blue_red["blue"].values())
 ncol = next(i.shape[1] for i in dictionary_blue_red["blue"].values())
 
-for row in range(0,nrow):
-    for column in range(0,ncol):
-        output.append(mtcd_test1(dictionary_blue_red, row , column))
+for row in range(0, nrow):
+    for column in range(0, ncol):
+        output.append(mtcd_test1(dictionary_blue_red, row, column))
 
 output = [mtcd(dictionary_blue_red, "blue", r, c)
           for r in range(0, nrow)
           for c in range(0, ncol)]
 
 output2 = np.asarray(output).reshape(nrow, ncol)
+

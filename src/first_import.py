@@ -1,8 +1,8 @@
 
 
-def first_import(filename, image_files):
+def first_import(filename, list):
     # updates a list with the names of the image files
-    image_files.append(filename)
+    list.append(filename)
     print("File added to list")
 
 

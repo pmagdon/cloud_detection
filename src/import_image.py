@@ -1,7 +1,7 @@
 import rasterio
 
 
-def import_image(file, blue_band,  red_band, dic):
+def import_image(file, blue_band, red_band, dic):
     # Reads the image file, takes the values of the selected bands
     # and of the acquisition time and updates a nested dictionary with them
     im = rasterio.open(file)
