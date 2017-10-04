@@ -22,8 +22,6 @@ for images in image_set:
 # run extract_timeseries function before you continue
 
 timeseries = extract_timeseries(dictionary_blue_red, "blue", 0, 0)
-time_series_blue = extract_timeseries(dictionary_blue_red, "blue", 0, 0)
-data_frame_blue = pd.DataFrame(time_series_blue)  # creates a data frame
 
 df = pd.DataFrame(timeseries)  # creates a dataframe
 df.plot(x="dates", y="values")  # plot time series

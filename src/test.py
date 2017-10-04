@@ -23,36 +23,111 @@ def cloud_mask(dic, band, row, col):
     dic["band"].update({date: result})  # nicht update sondern sustituir/überschreiben
 ####################################################################################################
 
-import rasterio
+def test_3(dic, band, row, col, size):
+    up = row - 1
+    down = row + 1
+    right = col + 1
+    left = col - 1
 
-def expand_image(file, band):
-    old_im = rasterio.open(file)
-    old_im = old_im.read(band)
-    old_size = old_im.shape
-    new_row = old_size[0]+ 10
-    new_col = old_size[1] + 10
-    new_size = (new_row, new_col)
-    new_im = np.full((new_row, new_col), np.nan)
-    im_nan = new_im.paste(old_im, (new_size[0] - old_size[0])/2,
-                          (new_size[1] - old_size[1])/2)
-    return im_nan
+####################
+na_matrix = np.full((3,3), np.nan)
 
-old_im = Image.open('someimage.jpg')
-old_size = old_im.size
+size = 3
+row, col = 526, 718  # for image
 
-new_size = (800, 800)
-new_im = Image.new("RGB", new_size)   ## luckily, this is already black!
-new_im.paste(old_im, ((new_size[0]-old_size[0])/2,
-                      (new_size[1]-old_size[1])/2))
+date_ref = [key for key in dictionary_blue_red["blue"].keys()][0]
+date = [key for key in dictionary_blue_red["blue"].keys()][1]
 
-new_im.show()
-# new_im.save('someimage.jpg')
+def test_3(dic, band, row, col):
+
+    na_matrix = np.full((3, 3), np.nan)
+
+    date = [key for key in dic[band].keys()][1]
+
+    def index_error(index, row_im, col_im):
+        try:
+            np.put(na_matrix, [index], dic[band][date][row_im, col_im])
+        except IndexError: na_matrix
+
+    index_error(4, row, col)
+    index_error(5, row, col+1)
+    index_error(7, row+1, col)
+    index_error(8, row+1, col+1)
+
+    if row - 1 >= 0:
+        index_error(0, row-1, col-1)
+        index_error(1, row - 1, col)
+        index_error(2, row - 1, col + 1)
+    else: na_matrix
+
+    if col -1>=0:
+        index_error(3, row, col-1)
+        index_error(6, row+1, col-1)
+    else: na_matrix
 
 
-####################################
+##############################
+
+
+try:
+    na_matrix[mid - 1, mid - 1] = dictionary_blue_red["blue"][date][row - 1, col - 1]
+except IndexError:
+    na_matrix
+
+if row - 1 < 0: na_matrix[mid - 1, mid - 1] = np.nan
+
+try:
+    na_matrix[mid - 1, mid] = dictionary_blue_red["blue"][date][row - 1, col]
+except IndexError:
+    na_matrix[mid - 1, mid] = np.nan
+if row -1 < 0: na_matrix[mid - 1, mid] = np.nan
+
+try:
+    na_matrix[mid - 1, mid + 1] = dictionary_blue_red["blue"][date][row - 1, col + 1]
+except IndexError:
+    na_matrix[mid - 1, mid + 1] = np.nan
+if row-1 < 0: na_matrix[mid - 1, mid + 1] = np.nan
+
+try:
+    na_matrix[mid, mid - 1] = dictionary_blue_red["blue"][date][row, col - 1]
+except IndexError:
+    na_matrix[mid, mid - 1] = np.nan
+if col - 1 < 0 : na_matrix[mid, mid - 1] = np.nan
+
+try:
+    na_matrix[mid, mid + 1] = dictionary_blue_red["blue"][date][row, col + 1]
+except IndexError:
+    na_matrix[mid, mid + 1] = np.nan
+
+try:
+    na_matrix[mid + 1, mid - 1] = dictionary_blue_red["blue"][date][row + 1, col - 1]
+except IndexError:
+    na_matrix[mid + 1, mid - 1] = np.nan
+if col -1 < 0: na_matrix[mid + 1, mid - 1] = np.nan
+
+try:
+    na_matrix[mid + 1, mid] = dictionary_blue_red["blue"][date][row + 1, col]
+except IndexError:
+    na_matrix[mid + 1, mid] = np.nan
+
+try:
+    na_matrix[mid + 1 , mid + 1] = dictionary_blue_red["blue"][date][row + 1, col + 1]
+except IndexError:
+    na_matrix[mid + 1, mid + 1] = np.nan
 
 
 
 
-np.full((6,2), np.nan)
+####################
 
+a=['123','2',4]
+index = -1
+
+try:
+    b = a[index]
+except IndexError:
+    b = np.nan
+
+a=['123','2',4]
+index = -1
+if index < 0: b = np.nan
