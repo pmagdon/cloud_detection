@@ -28,7 +28,7 @@ df.plot(x="dates", y="values")  # plot time series
 
 # run mtcd function before you continue
 
-output = []  # noch umwandeln in array mit derselben dimension reshape oder so
+output = []
 
 nrow = next(i.shape[0] for i in dictionary_blue_red["blue"].values())
 ncol = next(i.shape[1] for i in dictionary_blue_red["blue"].values())

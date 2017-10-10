@@ -47,34 +47,21 @@ def mtcd_test2(dic, row, col):
 
 # Test 3 #
 
-def test_3(dic, band, row, col):
-    na_matrix = np.full((3, 3), np.nan)
+def test_3(dic, band, row, col, size):
+    na_matrix = np.full((size, size), np.nan)
 
     date = [key for key in dic[band].keys()][1]
 
-    def index_error(index, row_im, col_im):
-        try:
-            np.put(na_matrix, [index], dic[band][date][row_im, col_im])
-        except IndexError:
-            na_matrix
+    half = int(size/2 + 0.5 -1)
+    row_limit = dic[band][date].shape[0]
+    col_limit = dic[band][date].shape[1]
 
-    index_error(4, row, col)
-    index_error(5, row, col + 1)
-    index_error(7, row + 1, col)
-    index_error(8, row + 1, col + 1)
+    if row - half > 0 and row + half < row_limit and col - half > 0 and col + half < col_limit:
+        np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
+           dic[band][date][[row for row in range(row-half, row+half)],
+                           [col for col in range(col-half, col+half)]])
 
-    if row - 1 >= 0:
-        index_error(0, row - 1, col - 1)
-        index_error(1, row - 1, col)
-        index_error(2, row - 1, col + 1)
-    else:
-        na_matrix
-
-    if col - 1 >= 0:
-        index_error(3, row, col - 1)
-        index_error(6, row + 1, col - 1)
-    else:
-        na_matrix
+    return na_matrix
 
 def cor_test3(array1, array2):
     cov = np.mean((array1 - array1.mean()) * (array2 - array2.mean()))
