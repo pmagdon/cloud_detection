@@ -1,19 +1,22 @@
 import pandas as pd
-import numpy as np
 from src.first_import import first_import
 from src.import_image import import_image
 from src.timeseries import extract_timeseries
-from src.multi_temporal_cloud_detection import mtcd_test1, mtcd_test2, mtcd_test3, mtcd
+from src.cloud_mask import cloud_mask
 
 #  Run
 
-image_set = [] # create an empty list
+image_set = []
+# empty list to be filled up with the file paths of the images
 
-first_import("data/clip1.tif", image_set) # maybe here we can also use a loop and do the first import
-                               # for all the images in a folder
+first_import("data/clip1.tif", image_set)
 first_import("data/clip2.tif", image_set)
+# imports the file paths to the list. Output: list updated
+# to do: import all the images of a folder at one time
 
 dictionary_blue_red = {"blue": {}, "red": {}}
+# this empty nested dictionary will be updated with the arrays of numbers which correspond to the pixel reflectance
+# values. Form of the dictionary = {"band": {date:
 
 for images in image_set:
     # reads all the image files in the list
@@ -28,18 +31,20 @@ df.plot(x="dates", y="values")  # plot time series
 
 # run mtcd function before you continue
 
-output = []
+cloud_mask_dictionary = {}
+# empty dictionary which will be updated with the cloud mask of the images indicating the date of the image
+# form of the dictionary {date: cloud_mask}
 
-nrow = next(i.shape[0] for i in dictionary_blue_red["blue"].values())
-ncol = next(i.shape[1] for i in dictionary_blue_red["blue"].values())
+cloud_mask(dictionary_blue_red, date, cloud_mask_dictionary)
+# creates a cloud mask for a given date with help of mtcd() function
+# updates the cloud mask dictionary with the cloud mask of a given date
 
-for row in range(0, nrow):
-    for column in range(0, ncol):
-        output.append(mtcd_test1(dictionary_blue_red, row, column))
+# Next: test 1 and test 2 need a free cloud pixel as reference which should be so recent in time as possible
+# Search free cloud pixel for reference in cloud_mask_dictionary beginning with most recent date: cloud free pixels
+# in cloud_mask_dictionary are tagged as True
+# When you find it: remember the date
+# Search this date in the blue_red_dictionary and take the pixel value of it:
+# you have your free cloud reference pixel value
 
-output = [mtcd(dictionary_blue_red, "blue", r, c)
-          for r in range(0, nrow)
-          for c in range(0, ncol)]
 
-output2 = np.asarray(output).reshape(nrow, ncol)
 

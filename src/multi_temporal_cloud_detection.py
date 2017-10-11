@@ -5,7 +5,7 @@ import numpy as np
 
 
 # Test 1 #
-def mtcd_test1(dic, row, col):
+def mtcd_test1(dic, row, col, date):
     # test if the temporal variation of reflectance on the blue band is big compared to a threshold
     # Big increase indicates cloud
 
@@ -26,7 +26,7 @@ def mtcd_test1(dic, row, col):
 
 
 # Test 2 #
-def mtcd_test2(dic, row, col):
+def mtcd_test2(dic, row, col, date):
     # test if the variation of reflectance in the red band is much greater than in the blue band
 
     time_series_red = extract_timeseries(dic, "red", row, col)
@@ -47,18 +47,18 @@ def mtcd_test2(dic, row, col):
 
 # Test 3 #
 
-def test_3(dic, band, row, col, size):
+def test_3(dic, row, col, size, date):
     na_matrix = np.full((size, size), np.nan)
 
-    date = [key for key in dic[band].keys()][1]
+    date = [key for key in dic["blue"].keys()][1]
 
     half = int(size/2 + 0.5 -1)
-    row_limit = dic[band][date].shape[0]
-    col_limit = dic[band][date].shape[1]
+    row_limit = dic["blue"][date].shape[0]
+    col_limit = dic["blue"][date].shape[1]
 
     if row - half > 0 and row + half < row_limit and col - half > 0 and col + half < col_limit:
         np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
-           dic[band][date][[row for row in range(row-half, row+half)],
+           dic["blue"][date][[row for row in range(row-half, row+half)],
                            [col for col in range(col-half, col+half)]])
 
     return na_matrix
@@ -73,16 +73,16 @@ def cor_test3(array1, array2):
         return False
 
 
-def mtcd(dic, band, row, col):
+def mtcd(dic, row, col, date):
     # check the result of the 3 tests and returns
     # True when cloud, False when not cloud
-    Test_1 = mtcd_test1(dic, row, col)
-    Test_2 = mtcd_test2(dic, row, col)
-    Test_3 = mtcd_test3(dic, band, row, col)
+    Test_1 = mtcd_test1(dic, row, col, date)
+    Test_2 = mtcd_test2(dic, row, col, date)
+    Test_3 = cor_test3(dic, row, col, date)
     if Test_1 == True and Test_2 == False and Test_3 == False:
-        return True
+        return np.nan, date
     else:
-        return False
+        return True, date
 
 
 
