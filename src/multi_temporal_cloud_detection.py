@@ -2,6 +2,7 @@ import datetime
 from src.timeseries import extract_timeseries
 import pandas as pd
 import numpy as np
+import math
 
 
 # Test 1 #
@@ -52,7 +53,7 @@ def test_3(dic, row, col, size, date):
 
     date = [key for key in dic["blue"].keys()][1]
 
-    half = int(size/2 + 0.5 -1)
+    half = math.floor(size/2)
     row_limit = dic["blue"][date].shape[0]
     col_limit = dic["blue"][date].shape[1]
 
@@ -60,8 +61,9 @@ def test_3(dic, row, col, size, date):
         np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
            dic["blue"][date][[row for row in range(row-half, row+half)],
                            [col for col in range(col-half, col+half)]])
+    else: #
 
-    return na_matrix
+        return na_matrix
 
 def cor_test3(array1, array2):
     cov = np.mean((array1 - array1.mean()) * (array2 - array2.mean()))
