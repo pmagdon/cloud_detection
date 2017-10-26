@@ -16,7 +16,7 @@ first_import("data/clip2.tif", image_set)
 
 dictionary_blue_red = {"blue": {}, "red": {}}
 # this empty nested dictionary will be updated with the arrays of numbers which correspond to the pixel reflectance
-# values. Form of the dictionary = {"band": {date:
+# values. Form of the dictionary = {"band": {date: image values}}
 
 for images in image_set:
     # reads all the image files in the list

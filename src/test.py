@@ -5,6 +5,8 @@ import numpy as np
 import math
 
 
+########## test 3 before craig´s code i############
+
 def test_3(dic, row, col, size, date):
     na_matrix = np.full((size, size), np.nan)
     # Creates a matrix full of nan with the size "size"
@@ -37,18 +39,33 @@ def test_3(dic, row, col, size, date):
     return na_matrix
 
 
-                ##################
+###########################
 
-na_matrix = np.full((3,3), np.nan)
+fun = {"blue": {"day1": np.arange(25).reshape(5,5)}}
 
-size = 3
-row, col = 526, 718  # for image
 
-date_ref = [key for key in dictionary_blue_red["blue"].keys()][0]
-date = [key for key in dictionary_blue_red["blue"].keys()][1]
+def test_3(dic, row, col, size, date):
+    na_matrix = np.full((size, size), np.nan)
 
-np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)], [y for y in range(0, 9)])
+    row_limit = dic["blue"][date].shape[0]
+    col_limit = dic["blue"][date].shape[1]
 
-###################
+    windowsize = int(size)  # Needs to always be odd so there is a central cell
+    halfwindow = math.floor(windowsize / 2)
 
+    if row - halfwindow >= 0 and row + halfwindow < row_limit and col - halfwindow >= 0 and col + halfwindow < col_limit:
+        np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
+           dic["blue"][date][[row for row in range(row-halfwindow -1, row+halfwindow)],
+                           [col for col in range(col-halfwindow -1, col+halfwindow)]])
+    else:
+        for x in range(-halfwindow, (halfwindow + 1)):
+            # Run for every column in the window in each row
+            row_window = (row + x)
+            for y in range(-halfwindow, (halfwindow + 1)):
+                col_window = (col + y)
+                if row_limit > row_window >= 0 and col_limit > col_window >= 0:
+                    np.put(na_matrix, [row_window, col_window],
+                           dic["blue"][date][row_window][col_window])
+                    print(row_window, col_window, " is a usable cell")
+    return na_matrix
 
