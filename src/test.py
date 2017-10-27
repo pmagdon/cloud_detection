@@ -39,9 +39,9 @@ def test_3(dic, row, col, size, date):
     return na_matrix
 
 
-###########################
-
+##########################
 fun = {"blue": {"day1": np.arange(25).reshape(5,5)}}
+print(fun["blue"]["day1"])
 
 
 def test_3(dic, row, col, size, date):
@@ -55,8 +55,8 @@ def test_3(dic, row, col, size, date):
 
     if row - halfwindow >= 0 and row + halfwindow < row_limit and col - halfwindow >= 0 and col + halfwindow < col_limit:
         np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
-           dic["blue"][date][[row for row in range(row-halfwindow -1, row+halfwindow)],
-                           [col for col in range(col-halfwindow -1, col+halfwindow)]])
+           dic["blue"][date][[row for row in range(row-halfwindow, row+halfwindow)],
+                           [col for col in range(col-halfwindow, col+halfwindow)]])
     else:
         for x in range(-halfwindow, (halfwindow + 1)):
             # Run for every column in the window in each row

@@ -61,9 +61,8 @@ def test_3(dic, row, col, size, date):
         np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
            dic["blue"][date][[row for row in range(row-half, row+half)],
                            [col for col in range(col-half, col+half)]])
-    else: #
 
-        return na_matrix
+    return na_matrix
 
 def cor_test3(array1, array2):
     cov = np.mean((array1 - array1.mean()) * (array2 - array2.mean()))
