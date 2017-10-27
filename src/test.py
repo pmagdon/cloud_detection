@@ -8,6 +8,7 @@ import math
 ########## test 3 before craig´s code i############
 
 def test_3(dic, row, col, size, date):
+
     na_matrix = np.full((size, size), np.nan)
     # Creates a matrix full of nan with the size "size"
 
@@ -45,18 +46,23 @@ print(fun["blue"]["day1"])
 
 
 def test_3(dic, row, col, size, date):
+    if size%2 == 0:
+        raise ValueError(" Window size needs to be odd")
+
     na_matrix = np.full((size, size), np.nan)
 
     row_limit = dic["blue"][date].shape[0]
     col_limit = dic["blue"][date].shape[1]
 
-    windowsize = int(size)  # Needs to always be odd so there is a central cell
+    windowsize = int(size)
     halfwindow = math.floor(windowsize / 2)
 
+    def get_values(array, row, col, halfwindow):
+        array[row - halfwindow:row + halfwindow + 1, col - halfwindow:col + halfwindow + 1]
+
     if row - halfwindow >= 0 and row + halfwindow < row_limit and col - halfwindow >= 0 and col + halfwindow < col_limit:
-        np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
-           dic["blue"][date][[row for row in range(row-halfwindow, row+halfwindow)],
-                           [col for col in range(col-halfwindow, col+halfwindow)]])
+        dic["blue"][date][row - halfwindow:row + halfwindow + 1, col - halfwindow:col + halfwindow + 1]
+
     else:
         for x in range(-halfwindow, (halfwindow + 1)):
             # Run for every column in the window in each row
@@ -64,8 +70,6 @@ def test_3(dic, row, col, size, date):
             for y in range(-halfwindow, (halfwindow + 1)):
                 col_window = (col + y)
                 if row_limit > row_window >= 0 and col_limit > col_window >= 0:
-                    np.put(na_matrix, [row_window, col_window],
-                           dic["blue"][date][row_window][col_window])
                     print(row_window, col_window, " is a usable cell")
     return na_matrix
 
