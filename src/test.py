@@ -3,11 +3,12 @@ from src.timeseries import extract_timeseries
 import pandas as pd
 import numpy as np
 import math
-import sys
+
 
 ########## test 3 before craig´s code i############
 
 def test_3(dic, row, col, size, date):
+
     na_matrix = np.full((size, size), np.nan)
     # Creates a matrix full of nan with the size "size"
 
@@ -45,33 +46,23 @@ print(fun["blue"]["day1"])
 
 
 def test_3(dic, row, col, size, date):
-    # Test size needs to be odd
     if size%2 == 0:
-        raise ValueError(" Size needs to be odd!")
+        raise ValueError(" Window size needs to be odd")
 
     na_matrix = np.full((size, size), np.nan)
 
     row_limit = dic["blue"][date].shape[0]
     col_limit = dic["blue"][date].shape[1]
 
-    windowsize = int(size)  # Needs to always be odd so there is a central cell
+    windowsize = int(size)
     halfwindow = math.floor(windowsize / 2)
 
-    def get_values(array,row,col,size):
-        row_min = row-size
-        row_max = row+size+1
-        col_min = col - size
-        col_max = col + size + 1
-
-        if row_min
-
-        array[row - row_min:row + row_max, col - col_min:col + col_max]
+    def get_values(array, row, col, halfwindow):
+        array[row - halfwindow:row + halfwindow + 1, col - halfwindow:col + halfwindow + 1]
 
     if row - halfwindow >= 0 and row + halfwindow < row_limit and col - halfwindow >= 0 and col + halfwindow < col_limit:
-        for
-        np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
-           dic["blue"][date][[row for row in range(row-halfwindow, row+halfwindow)],
-                           [col for col in range(col-halfwindow, col+halfwindow)]])
+        dic["blue"][date][row - halfwindow:row + halfwindow + 1, col - halfwindow:col + halfwindow + 1]
+
     else:
         for x in range(-halfwindow, (halfwindow + 1)):
             # Run for every column in the window in each row
@@ -79,39 +70,6 @@ def test_3(dic, row, col, size, date):
             for y in range(-halfwindow, (halfwindow + 1)):
                 col_window = (col + y)
                 if row_limit > row_window >= 0 and col_limit > col_window >= 0:
-                    np.put(na_matrix, [row_window, col_window],
-                           dic["blue"][date][row_window][col_window])
                     print(row_window, col_window, " is a usable cell")
     return na_matrix
-
-
-
-image = np.arange(100).reshape(10,10)
-#image = np.random.randint(0,100,100).reshape(10,10)
-
-def moving_window(array, size,edge='nan'):
-    """ Function to extract the values within an analysis window from an 2d Array
-    Args:
-        array:  the image from which to extract all the moving windows
-        size: the siez of the movong window as odd number
-        edge: a string argument to specify how to handle the edges
-    Returns:
-         None and prints all windows
-    """
-
-    if size%2 == 0:
-        raise ValueError(" Size needs to be odd!")
-    if edge != 'nan':
-        raise ValueError(" Edge argument needs to of 'nan', ...")
-
-    sz = math.floor(size / 2)
-    #Apply padding with nan add edge
-    array = np.pad(array.astype(float),pad_width=sz,mode='constant',constant_values=np.nan)
-
-    for row in range(sz, array.shape[0]-sz):
-        for col in range(sz, image.shape[1]-sz):
-            print(array[row-sz:row + sz + 1, col-sz:col+sz+1])
-
-
-moving_window(image, 3,edge='nan')
 
