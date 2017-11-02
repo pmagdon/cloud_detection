@@ -48,21 +48,29 @@ def mtcd_test2(dic, row, col, date):
 
 # Test 3 #
 
-def test_3(dic, row, col, size, date):
-    na_matrix = np.full((size, size), np.nan)
+def moving_window(dic, date, row, col, size, edge='nan'):
+    """ Function to extract the values within an analysis window from an 2d Array
+    Args:
+        array:  the image from which to extract all the moving windows
+        size: the siez of the movong window as odd number
+        edge: a string argument to specify how to handle the edges
+    Returns:
+         None and prints all windows
+    """
+    if size%2 == 0:
+        raise ValueError(" Size needs to be odd!")
+    if edge != 'nan':
+        raise ValueError(" Edge argument needs to of 'nan', ...")
 
-    date = [key for key in dic["blue"].keys()][1]
+    sz = math.floor(size / 2)
+    Row = row + sz
+    Col = col + sz
+    #Apply padding with nan add edge
+    array = dic["blue"][date]
+    array_with_margins = np.pad(array.astype(float),pad_width=sz,mode='constant',constant_values=np.nan)
+    result = array_with_margins[Row - sz:Row + sz + 1, Col - sz:Col + sz + 1]
 
-    half = math.floor(size/2)
-    row_limit = dic["blue"][date].shape[0]
-    col_limit = dic["blue"][date].shape[1]
-
-    if row - half > 0 and row + half < row_limit and col - half > 0 and col + half < col_limit:
-        np.put(na_matrix, [value for value in range(na_matrix.shape[0] ** 2)],
-           dic["blue"][date][[row for row in range(row-half, row+half)],
-                           [col for col in range(col-half, col+half)]])
-
-    return na_matrix
+    return result
 
 def cor_test3(array1, array2):
     cov = np.mean((array1 - array1.mean()) * (array2 - array2.mean()))

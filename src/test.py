@@ -19,24 +19,25 @@ def moving_window(dic, date, row, col, size, edge='nan'):
     Returns:
          None and prints all windows
     """
-
     if size%2 == 0:
         raise ValueError(" Size needs to be odd!")
     if edge != 'nan':
         raise ValueError(" Edge argument needs to of 'nan', ...")
 
     sz = math.floor(size / 2)
+    Row = row + sz
+    Col = col + sz
     #Apply padding with nan add edge
     array = dic["blue"][date]
     array_with_margins = np.pad(array.astype(float),pad_width=sz,mode='constant',constant_values=np.nan)
-    result = array_with_margins[row - sz:row + sz + 1, col - sz:col + sz + 1]
+    result = array_with_margins[Row - sz:Row + sz + 1, Col - sz:Col + sz + 1]
 
     return result
 
 
 ################# Pauls original function ########################
 
-image = np.arange(100).reshape(10,10)
+image = np.arange(25).reshape(5,5)
 #image = np.random.randint(0,100,100).reshape(10,10)
 
 def moving_window(array, size,edge='nan'):
@@ -58,8 +59,8 @@ def moving_window(array, size,edge='nan'):
     #Apply padding with nan add edge
     array = np.pad(array.astype(float),pad_width=sz,mode='constant',constant_values=np.nan)
 
-    for row in range(sz, array.shape[0]-sz):
-        for col in range(sz, image.shape[1]-sz):
+    for row in range(sz, array.shape[0]):
+        for col in range(sz, image.shape[1]+1):
             print(array[row-sz:row + sz + 1, col-sz:col+sz+1])
 
 
