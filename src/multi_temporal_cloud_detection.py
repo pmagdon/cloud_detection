@@ -51,47 +51,53 @@ def mtcd_test2(dic, row, col, date):
 def moving_window(dic, date, row, col, size, edge='nan'):
     """ Function to extract the values within an analysis window from an 2d Array
     Args:
-        array:  the image from which to extract all the moving windows
-        size: the siez of the movong window as odd number
+        dic: the dictionary where the image is stored
+        date: the date of the image from which to extract the moving window and, at the same time, the key of the
+              dictionary
+        row, col = the pixel number of row and column of the image which will be the center of the moving window
+        size: the size of the moving window as odd number
         edge: a string argument to specify how to handle the edges
     Returns:
-         None and prints all windows
+         Prints the moving window
     """
     if size%2 == 0:
         raise ValueError(" Size needs to be odd!")
     if edge != 'nan':
         raise ValueError(" Edge argument needs to of 'nan', ...")
 
-    sz = math.floor(size / 2)
-    Row = row + sz
+    sz = math.floor(size / 2) # the floor of the half of the window
+    Row = row + sz # to adjust the indexing which will change depending on the size of the window
     Col = col + sz
     #Apply padding with nan add edge
     array = dic["blue"][date]
-    array_with_margins = np.pad(array.astype(float),pad_width=sz,mode='constant',constant_values=np.nan)
+    array_with_margins = np.pad(array.astype(float),pad_width=sz, mode='constant',constant_values=np.nan)
     result = array_with_margins[Row - sz:Row + sz + 1, Col - sz:Col + sz + 1]
 
     return result
 
 def cor_test3(array1, array2):
-    cov = np.mean((array1 - array1.mean()) * (array2 - array2.mean()))
-    max_cov = array1.std() * array2.std()
-    result = cov / max_cov
+    cov = np.nanmean((array1 - np.nanmean(array1)) * (array2 - np.nanmean(array2)))
+    max_cov = np.nanstd(array1) * np.nanstd(array2)
+    result = abs(cov / max_cov)
     if result > 0.5:
         return True
     else:
         return False
 
 
-def mtcd(dic, row, col, date):
+def mtcd(dic, row, col, date, size):
     # check the result of the 3 tests and returns
     # True when cloud, False when not cloud
+    date_ref =
     Test_1 = mtcd_test1(dic, row, col, date)
     Test_2 = mtcd_test2(dic, row, col, date)
-    Test_3 = cor_test3(dic, row, col, date)
+    array1 = moving_window(dic, date, row, col, size, edge='nan')
+    array2 = moving_window(dic, date_ref, row, col, size, edge='nan')
+    Test_3 = cor_test3(array1, array2)
     if Test_1 == True and Test_2 == False and Test_3 == False:
-        return np.nan, date
+        return np.nan
     else:
-        return True, date
+        return True
 
 
 

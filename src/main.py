@@ -3,6 +3,7 @@ from src.first_import import first_import
 from src.import_image import import_image
 from src.timeseries import extract_timeseries
 from src.cloud_mask import cloud_mask
+from src.multi_temporal_cloud_detection import mtcd_test1, mtcd_test2, moving_window, cor_test3
 
 #  Run
 
@@ -17,6 +18,8 @@ first_import("data/clip2.tif", image_set)
 dictionary_blue_red = {"blue": {}, "red": {}}
 # this empty nested dictionary will be updated with the arrays of numbers which correspond to the pixel reflectance
 # values. Form of the dictionary = {"band": {date: image values}}
+
+cloud_mask_dictionary = {}
 
 for images in image_set:
     # reads all the image files in the list
