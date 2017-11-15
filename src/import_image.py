@@ -22,3 +22,11 @@ def import_image(file, blue_band, red_band, dic):
     dic["red"].update({date: im_red_band})
     print("Dictionary updated")
 
+def import_cloudfree_reference(file, dic):
+    first_ref_values = rasterio.open(file).read(1)
+    date_first_ref = rasterio.open(file).tags()['Acquisition_DateTime'][0:10]
+    first_ref_mask = np.full_like(first_ref_values, True)
+    dic.update({date_first_ref: first_ref_mask})
+    print("First cloud free reference imported to dictionary")
+
+
