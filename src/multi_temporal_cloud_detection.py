@@ -3,24 +3,30 @@ from src.timeseries import extract_timeseries
 import pandas as pd
 import numpy as np
 import math
+from src.search_reference import search_reference
+from src.main import dictionary_masked, dictionary_blue_red
 
 
 # Test 1 #
-def mtcd_test1(dic, row, col, date):
+def mtcd_test1(date, row, col, dic_values = dictionary_blue_red, dic_mask = dictionary_masked):
     # test if the temporal variation of reflectance on the blue band is big compared to a threshold
     # Big increase indicates cloud
 
-    time_series_blue = extract_timeseries(dic, "blue", row, col)
-    data_frame_blue = pd.DataFrame(time_series_blue)  # creates a data frame
+    time_series_blue = extract_timeseries(dic_values, "blue", row, col)
+    # extract the time series for a given pixel
+    data_frame_blue = pd.DataFrame(time_series_blue)
+    # creates a data frame from the time series. This is necessary for the comparision
 
-    refl_blue_dayref = data_frame_blue["values"][0]  # extracts the pixel value of the reference image
-    refl_blue_dayd = data_frame_blue["values"][1] # extracts the pixel value of an image
+    reference_values = search_reference(dictionary_blue_red, dictionary_masked, row, col, "blue")
 
-    dayd = datetime.datetime.strptime(data_frame_blue["dates"][0], "%Y-%m-%d")  # extracts the date value
-    dayref = datetime.datetime.strptime(data_frame_blue["dates"][1], "%Y-%m-%d")  # extracts data value of reference image
+    date_ref = datetime.datetime.strptime(reference_values[0], "%Y-%m-%d") # extracts the pixel value of an image
+    value_ref = reference_values[1]  # extracts the pixel value of the reference image
 
-    if refl_blue_dayd - refl_blue_dayref > 3 * (
-        1 + (dayd - dayref).total_seconds() / (60 * 60 * 24) / 30):
+    current_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    current_value = dic_values["blue"][current_date][row, col]
+
+    if current_value - value_ref > 3 * (
+        1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
         return True
     else:
         return False
@@ -88,7 +94,7 @@ def cor_test3(array1, array2):
 def mtcd(dic, row, col, date, size):
     # check the result of the 3 tests and returns
     # True when cloud, False when not cloud
-    date_ref =
+
     Test_1 = mtcd_test1(dic, row, col, date)
     Test_2 = mtcd_test2(dic, row, col, date)
     array1 = moving_window(dic, date, row, col, size, edge='nan')

@@ -1,4 +1,5 @@
 import rasterio
+import numpy as np
 
 
 def import_image(file, blue_band, red_band, dic):
