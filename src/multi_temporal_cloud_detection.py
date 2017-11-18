@@ -1,6 +1,5 @@
 import datetime
-from src.timeseries import extract_timeseries
-import pandas as pd
+import gdal
 import numpy as np
 import math
 from src.search_reference import search_reference
@@ -12,18 +11,13 @@ def mtcd_test1(date, row, col, dic_values = dictionary_blue_red, dic_mask = dict
     # test if the temporal variation of reflectance on the blue band is big compared to a threshold
     # Big increase indicates cloud
 
-    time_series_blue = extract_timeseries(dic_values, "blue", row, col)
-    # extract the time series for a given pixel
-    data_frame_blue = pd.DataFrame(time_series_blue)
-    # creates a data frame from the time series. This is necessary for the comparision
-
-    reference_values = search_reference(dictionary_blue_red, dictionary_masked, row, col, "blue")
+    reference_values = search_reference(dic_values, dic_mask, row, col, "blue")
 
     date_ref = datetime.datetime.strptime(reference_values[0], "%Y-%m-%d") # extracts the pixel value of an image
     value_ref = reference_values[1]  # extracts the pixel value of the reference image
 
     current_date = datetime.datetime.strptime(date, "%Y-%m-%d")
-    current_value = dic_values["blue"][current_date][row, col]
+    current_value = dic_values["blue"][date][row, col]
 
     if current_value - value_ref > 3 * (
         1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
@@ -33,23 +27,22 @@ def mtcd_test1(date, row, col, dic_values = dictionary_blue_red, dic_mask = dict
 
 
 # Test 2 #
-def mtcd_test2(dic, row, col, date):
+def mtcd_test2(date, row, col, dic_values = dictionary_blue_red, dic_mask = dictionary_masked):
     # test if the variation of reflectance in the red band is much greater than in the blue band
 
-    time_series_red = extract_timeseries(dic, "red", row, col)
-    data_frame_red = pd.DataFrame(time_series_red)  # creates a data frame
+    reference_values = search_reference(dic_values, dic_mask, row, col, "red")
 
-    refl_red_dayref = data_frame_red["values"][0]  # extracts the pixel value of the reference image
-    refl_red_dayd = data_frame_red["values"][1]  # extracts the pixel value of an image
+    date_ref = datetime.datetime.strptime(reference_values[0], "%Y-%m-%d") # extracts the pixel value of an image
+    value_ref = reference_values[1]  # extracts the pixel value of the reference image
 
-    dayd = datetime.datetime.strptime(data_frame_red["dates"][0], "%Y-%m-%d")  # extracts the date value
-    dayref = datetime.datetime.strptime(data_frame_red["dates"][1],
-                                        "%Y-%m-%d")  # extracts data value of reference image
+    current_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    current_value = dic_values["red"][date][row, col]
 
-    if (refl_red_dayd - refl_red_dayref) > 150 * (dayd - dayref).total_seconds() / (60 * 60 * 24):
-        return False
-    else:
+    if current_value - value_ref > 150 * (
+                1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
         return True
+    else:
+        return False
 
 
 # Test 3 #
@@ -90,20 +83,48 @@ def cor_test3(array1, array2):
     else:
         return False
 
-
-def mtcd(dic, row, col, date, size):
+def mtcd(date, row, col, size, dic_values = dictionary_blue_red, dic_mask = dictionary_masked):
     # check the result of the 3 tests and returns
     # True when cloud, False when not cloud
 
-    Test_1 = mtcd_test1(dic, row, col, date)
-    Test_2 = mtcd_test2(dic, row, col, date)
-    array1 = moving_window(dic, date, row, col, size, edge='nan')
-    array2 = moving_window(dic, date_ref, row, col, size, edge='nan')
-    Test_3 = cor_test3(array1, array2)
+    Test_1 = mtcd_test1(date, row, col, dic_values, dic_mask)
+    Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask)
+    reference_values = search_reference(dic_values, dic_mask, row, col, "blue")
+    date_ref = reference_values[0]
+
+    array_current_date = moving_window(dic_values, date, row, col, size, edge='nan')
+    array_reference_date = moving_window(dic_values, date_ref, row, col, size, edge='nan')
+    Test_3 = cor_test3(array_current_date, array_reference_date)
     if Test_1 == True and Test_2 == False and Test_3 == False:
         return np.nan
     else:
         return True
 
+for row in range(0, 100):
+    for col in range(0, 100):
+        mtcd("2015-04-09", row, col, 3)
 
+nrow = dictionary_blue_red["blue"]["2015-04-09"].shape[0]
+ncol = dictionary_blue_red["blue"]["2015-04-09"].shape[1]
 
+cloud_mask_list = [mtcd("2015-04-09", r, c, 3)
+        for r in range(0, nrow)
+        for c in range(0, ncol)]
+
+cloud_mask_array = np.asarray(cloud_mask_list).reshape(nrow, ncol)
+np.savetxt("cloud_mask.csv", cloud_mask_array, delimiter=",")
+
+dst_filename = 'cloud_mask.tiff'
+x_pixels = 100  # number of pixels in x
+y_pixels = 100  # number of pixels in y
+driver = gdal.GetDriverByName('GTiff')
+dataset = driver.Create(dst_filename,x_pixels, y_pixels, 1,gdal.GDT_Float32)
+dataset.GetRasterBand(1).WriteArray(cloud_mask_array)
+
+image = rasterio.open("data/2015-03-19.tif")
+geotrans= image.GetGeoTransform()  #get GeoTranform from existed 'data0'
+proj=image.GetProjection() #you can get from a exsited tif or import
+outds.SetGeoTransform(geotrans)
+outds.SetProjection(proj)
+outds.FlushCache()
+outds=None

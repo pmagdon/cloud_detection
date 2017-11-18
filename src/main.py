@@ -24,14 +24,12 @@ for images in image_set:
     # reads all the image files in the list
     import_image(images, 3, 1, dictionary_blue_red)
 
-# run extract_timeseries function before you continue
 
 timeseries = extract_timeseries(dictionary_blue_red, "blue", 0, 0)
 
 df = pd.DataFrame(timeseries)  # creates a data frame
 df.plot(x="dates", y="values")  # plot time series
 
-# run mtcd function before you continue
 dictionary_masked = {}
 # empty dictionary which will be updated with the cloud mask of the images indicating the date of the image
 # form of the dictionary {date: cloud_mask}
