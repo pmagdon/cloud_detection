@@ -17,11 +17,6 @@ def cloud_mask(dic, date, cloud_mask_dic):
     Returns:
         blsblsbslb
     """
-    nrow = dic["blue"][date].shape[0]
-    ncol = dic["blue"][date].shape[1]
-    cloud_mask_list = [mtcd(dic, "blue", r, c, date)
-        for r in range(0, nrow)
-        for c in range(0, ncol)]
-    cloud_mask_array = np.asarray(cloud_mask_list).reshape(nrow, ncol)
+
     cloud_mask_dic.update({date: cloud_mask_array})
     print("Cloud mask dictionary updated")

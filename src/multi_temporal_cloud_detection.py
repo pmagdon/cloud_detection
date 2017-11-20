@@ -1,10 +1,7 @@
 import datetime
-import gdal
 import numpy as np
 import math
 from src.search_reference import search_reference
-from src.main import dictionary_masked, dictionary_blue_red
-
 
 # Test 1 #
 def mtcd_test1(date, row, col, dic_values = dictionary_blue_red, dic_mask = dictionary_masked):
@@ -100,31 +97,6 @@ def mtcd(date, row, col, size, dic_values = dictionary_blue_red, dic_mask = dict
     else:
         return True
 
-for row in range(0, 100):
-    for col in range(0, 100):
-        mtcd("2015-04-09", row, col, 3)
 
-nrow = dictionary_blue_red["blue"]["2015-04-09"].shape[0]
-ncol = dictionary_blue_red["blue"]["2015-04-09"].shape[1]
 
-cloud_mask_list = [mtcd("2015-04-09", r, c, 3)
-        for r in range(0, nrow)
-        for c in range(0, ncol)]
 
-cloud_mask_array = np.asarray(cloud_mask_list).reshape(nrow, ncol)
-np.savetxt("cloud_mask.csv", cloud_mask_array, delimiter=",")
-
-dst_filename = 'cloud_mask.tiff'
-x_pixels = 100  # number of pixels in x
-y_pixels = 100  # number of pixels in y
-driver = gdal.GetDriverByName('GTiff')
-dataset = driver.Create(dst_filename,x_pixels, y_pixels, 1,gdal.GDT_Float32)
-dataset.GetRasterBand(1).WriteArray(cloud_mask_array)
-
-image = rasterio.open("data/2015-03-19.tif")
-geotrans= image.GetGeoTransform()  #get GeoTranform from existed 'data0'
-proj=image.GetProjection() #you can get from a exsited tif or import
-outds.SetGeoTransform(geotrans)
-outds.SetProjection(proj)
-outds.FlushCache()
-outds=None
