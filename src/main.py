@@ -3,7 +3,10 @@ import numpy as np
 from src.first_import import first_import
 from src.import_image import import_image, import_cloudfree_reference
 from src.timeseries import extract_timeseries
+from src.cloud_mask import cloud_mask
 from src.multi_temporal_cloud_detection import mtcd_test1, mtcd_test2, moving_window, cor_test3, mtcd
+
+
 #  Run
 
 image_set = []
@@ -37,22 +40,14 @@ import_cloudfree_reference("data/2015-03-19.tif",dictionary_masked)
 # import the first cloud free reference into the dictionary_masked. Since the first image is always cloud free, all
 # the import is a matrix of the size of the image filled with True values
 
-nrow = dictionary_blue_red["blue"]["2015-04-09"].shape[0]
-ncol = dictionary_blue_red["blue"]["2015-04-09"].shape[1]
-
-cloud_mask_list = [mtcd("2015-04-09", r, c, 3)
-        for r in range(0, nrow)
-        for c in range(0, ncol)]
-
-cloud_mask_array = np.asarray(cloud_mask_list).reshape(nrow, ncol)
+for date in [key for key in dictionary_blue_red["blue"]]:
+    cloud_mask(date, 3)
 
 
 
 
-cloud_mask(dictionary_blue_red, date, cloud_mask_dictionary)
-# creates a cloud mask for a given date with help of mtcd() function
-# updates the cloud mask dictionary with the cloud mask of a given date
 
 
+##########################
 
-
+def cloud_mask(date, window_size, dic_mask=dictionary_masked):
