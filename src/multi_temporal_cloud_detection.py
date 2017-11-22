@@ -1,8 +1,7 @@
 import datetime
-import numpy as np
 import math
-from src.search_reference import search_reference
-from src.main import *
+#from src.search_reference import search_reference
+#from src.main import *
 
 # Test 1 #
 def mtcd_test1(date, row, col, dic_values = dictionary_blue_red, dic_mask = dictionary_masked):

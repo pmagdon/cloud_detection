@@ -4,6 +4,13 @@ from src.main import *
 
 
 def cloud_mask(date, window_size, dic_mask=dictionary_masked):
+    """
+
+    :param date:
+    :param window_size:
+    :param dic_mask:
+    :return:
+    """
     nrow = dictionary_blue_red["blue"][date].shape[0]
     ncol = dictionary_blue_red["blue"][date].shape[1]
 

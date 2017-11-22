@@ -1,7 +1,15 @@
 
 
 def search_reference(dic_values, dic_mask, row, col, band_name):
+    """
 
+    :param dic_values:
+    :param dic_mask:
+    :param row:
+    :param col:
+    :param band_name:
+    :return:
+    """
     key_images = [key for key, value in dic_mask.items()]
     # extract the keys from the masked dictionary since these correspond to the dates previous to the given date
 

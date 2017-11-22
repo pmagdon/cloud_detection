@@ -4,15 +4,18 @@ import numpy as np
 
 def import_image(file, blue_band, red_band, dic):
     """
-        Reads the image file, takes the values of the selected bands
-        and of the acquisition time and updates a nested dictionary with them
+        Import the blue and red band of an image into a dictionary.
 
-    :param str file: The inputfile.
+        Open the image file, read the values of the selected bands and of the acquisition date and update a nested
+        dictionary with these values. The nested dictionary has the next structure:
+        {band1:{date:values, ...},band2:{date:values,...}
+
+    :param str file: The input file.
     :param int blue_band: The number of the blue band.
-    :param object dict:
+    :param int red_band: The number of the red band.
+    :param object dic: The image values dictionary.
 
-    :return bool test: The return value. True for success, False otherwise.
-
+    :return: Print the message "Dictionary updated".
     """
 
     im = rasterio.open(file)
@@ -23,13 +26,24 @@ def import_image(file, blue_band, red_band, dic):
     dic["red"].update({date: im_red_band})
     print("Dictionary updated")
 
+
 def import_cloudfree_reference(file, dic):
+    """
+    Import the first image of the series which should be a cloud free reference.
 
+    Open the first cloud free image which serves as a reference. Open the file and read a band. Read the data of
+    acquisition. Create an array full of "True" values with the shape of the image array. Update the masked dictionary
+    with the created array and its correspondent date of acquisition.
 
+    :param str file: The input file.
+    :param object dic: The masked dictionary.
+    :return: Print the message "First cloud free reference imported to dictionary"
+    """
     first_ref_values = rasterio.open(file).read(1)
     date_first_ref = rasterio.open(file).tags()['Acquisition_DateTime'][0:10]
     first_ref_mask = np.full_like(first_ref_values, True)
     dic.update({date_first_ref: first_ref_mask})
     print("First cloud free reference imported to dictionary")
+
 
 
