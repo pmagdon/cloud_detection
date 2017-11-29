@@ -1,11 +1,8 @@
 import pandas as pd
-import numpy as np
 from src.first_import import first_import
 from src.import_image import import_image, import_cloudfree_reference
 from src.timeseries import extract_timeseries
 from src.cloud_mask import cloud_mask
-from src.multi_temporal_cloud_detection import mtcd_test1, mtcd_test2, moving_window, cor_test3, mtcd
-
 
 #  Run
 
@@ -41,13 +38,5 @@ import_cloudfree_reference("data/2015-03-19.tif",dictionary_masked)
 # the import is a matrix of the size of the image filled with True values
 
 for date in [key for key in dictionary_blue_red["blue"]]:
-    cloud_mask(date, 3)
+    cloud_mask(date, 3, dictionary_blue_red, dictionary_masked)
 
-
-
-
-
-
-##########################
-
-def cloud_mask(date, window_size, dic_mask=dictionary_masked):

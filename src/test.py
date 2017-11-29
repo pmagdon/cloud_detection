@@ -25,5 +25,16 @@ reference_value= pixel_values[index_reference_value]
 reference_date = key_result[index_reference_value]
 
 ###################################################################
+test_dic = {"cero": np.matrix([[0,0],[np.nan, np.nan]]), "uno": np.full((3, 3), 1, int),
+            "dos":  np.full((3, 3), np.nan), "tres": np.full((3,3), 3, int)}
 
+def find_reference_date(dictionary, value):
+    # prints all values that are not the one given in the parameter value
+    for key, value in dictionary.items():
+        if key not in value:
+            print(key)
+
+# why it doesn't work with return?
+
+####################################################################
 np.savetxt("cloud_mask.csv", cloud_mask_array, delimiter=",")

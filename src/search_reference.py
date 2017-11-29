@@ -2,35 +2,37 @@
 
 def search_reference(dic_values, dic_mask, row, col, band_name):
     """
+    Search and return the most recent cloud free value and its date before the current date.
 
-    :param dic_values:
-    :param dic_mask:
-    :param row:
-    :param col:
-    :param band_name:
-    :return:
+    Extract all dates previous to the date of the current analysed image by accessing the keys from the masked
+    dictionary, which contains the cloud masks for the images analysed until the moment. For these dates, extract
+    all the pixel values as well as all the masked values in form of arrays, the first ones from the values dictionary
+    and the second ones from the masked dictionary. The masked values are 1 if the pixel is not a cloud and na if it is
+    a cloud. From these arrays, extract the pixel values and the masked values for a given pixel in two different
+    lists. Extract the indices of the cloud free pixels of the second list (masked values) in a new list and from
+    this indices list, save the last value. This index corresponds to the most time recent cloud free value and is
+    used in the next step to subset the most recent cloud free date and pixel value.
+
+    :param object dic_values: The dictionary with the dates and the pixel values of the image as arrays.
+    :param object dic_mask: The dictionary with the dates and the cloud mask for the images.
+    :param int row: The row of the pixel.
+    :param int col: The column of the pixel.
+    :param str band_name: The band from which the pixel values are extracted.
+    :return: A list with the most recent cloud free date and pixel value.
     """
     key_images = [key for key, value in dic_mask.items()]
-    # extract the keys from the masked dictionary since these correspond to the dates previous to the given date
 
     value_images = [value for key, value in dic_values[band_name].items() if key in key_images]
-    # extract the values corresponding to the dates in key result, these are the values of all the images taken before
-    # the given date
 
     mask_images = [value for key, value in dic_mask.items() if key in key_images]
-    # extract the masked value (1 for not cloud and na for cloud) for the images taken before the given date
 
     mask_pixel = [value[row, col] for value in mask_images]
-    # extract the masked values for a given row and column in all images taken before the given date
 
     value_pixel = [value[row, col] for value in value_images]
-    # extract the values for a given row and column in all images taken before the given date
 
     indices_not_cloud = [index for index, value in enumerate(mask_pixel) if value == 1]
-    # extract the indices from the list "mask_pixel" that are True, i.e. that are cloud free
 
     index_recent_not_cloud = indices_not_cloud[-1]
-    # extract the last value of the list of "indices_not_cloud", i.e. the index of the most recent not cloud value
 
     reference_date = key_images[index_recent_not_cloud]
     reference_value = value_pixel[index_recent_not_cloud]

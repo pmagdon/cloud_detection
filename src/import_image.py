@@ -37,7 +37,7 @@ def import_cloudfree_reference(file, dic):
 
     :param str file: The input file.
     :param object dic: The masked dictionary.
-    :return: Print the message "First cloud free reference imported to dictionary"
+    :return: Print the message "First cloud free reference imported to dictionary".
     """
     first_ref_values = rasterio.open(file).read(1)
     date_first_ref = rasterio.open(file).tags()['Acquisition_DateTime'][0:10]
