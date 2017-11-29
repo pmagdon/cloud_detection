@@ -1,4 +1,5 @@
 import gdal, ogr, os, osr
+import rasterio
 
 ############## 1 Versuch ####################
 
@@ -61,3 +62,38 @@ values = pixel(image, 0, 0)
 
 # At some point I managed to open one raster that I created with qgis, but the values were 0 or na and it didn't show
 # anything...
+
+
+# A version for importing and exporting georeferences rasterdatasets using the rasterio library
+
+# Step 1 import an image
+
+image_file = 'data/clip1.tif'
+with rasterio.open(image_file) as src:
+    image = src.read()
+
+# Check dataset structure
+src.bounds
+src.shape
+src.crs
+src.transform
+
+#check numpy array
+
+image.shape
+
+# Modify the numpy array
+
+band = (image[1,:,:]*0.2)
+
+#Export the numpy array to an geotiff raster
+
+new_dataset = rasterio.open('data/new.tif', 'w', driver='GTiff',
+                            height=band.shape[0], width=band.shape[1],
+                            count=1, dtype=str(band.dtype),
+                            crs=src.crs, transform=src.transform)
+new_dataset.write(band, 1)
+
+new_dataset.close()
+
+
