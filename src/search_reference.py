@@ -38,3 +38,6 @@ def search_reference(dic_values, dic_mask, row, col, band_name):
     reference_value = value_pixel[index_recent_not_cloud]
 
     return reference_date, reference_value
+
+
+

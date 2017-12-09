@@ -4,7 +4,7 @@ import numpy as np
 from src.search_reference import search_reference
 
 
-def mtcd_test1(date, row, col, dic_values, dic_mask):
+def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
     """
     Test the temporal variation of reflectance on the blue band comparing it to a threshold which is a function of the
     time interval. A big increase (True) indicates cloud.
@@ -21,18 +21,19 @@ def mtcd_test1(date, row, col, dic_values, dic_mask):
     :param int col: The column of the pixel.
     :param object dic_values: The dictionary with the dates and the pixel values of the image as arrays.
     :param object dic_mask: The dictionary with the dates and the cloud mask for the images.
+    :param int par1: The percentage of variation in the blue band.
     :return: True if cloudy pixel, False if cloud free pixel
     """
 
-    reference_values = search_reference(dic_values, dic_mask, row, col, "blue")
+    reference = search_reference(dic_values, dic_mask, row, col, "blue")
 
-    date_ref = datetime.datetime.strptime(reference_values[0], "%Y-%m-%d")
-    value_ref = reference_values[1]
+    date_ref = datetime.datetime.strptime(reference[0], "%Y-%m-%d")
+    value_ref = reference[1]
 
     current_date = datetime.datetime.strptime(date, "%Y-%m-%d")
     current_value = dic_values["blue"][date][row, col]
 
-    if current_value - value_ref > 3 * (
+    if current_value - value_ref > par1 * (
         1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
         return True
     else:
@@ -40,36 +41,32 @@ def mtcd_test1(date, row, col, dic_values, dic_mask):
 
 
 # Test 2 #
-def mtcd_test2(date, row, col, dic_values, dic_mask):
+
+def mtcd_test2(date, row, col, dic_values, dic_mask, par2):
     """
-    Test the temporal variation of reflectance on the red band comparing it to a threshold which is a function of the
-    time interval. A big increase (True) indicates cloud.
+    Test the variation of reflectance in the red band in comparision with the variation in the blue band.
 
-    To compare the values of the image with the most recent cloud free reference, first extract the reference values
-    (date and pixel value) to a list with the search_reference function. Extract the current values of the red band
-    for the selected pixel defined by its row and its column (parameters) from the values dictionary using as key the
-    given date parameter. Compare the variation between the current pixel value and the cloud free reference value with
-    a threshold that is a function of the time interval between the two images. If the pixel value variation is bigger
-    than the threshold, classify the pixel as cloud free (True) and if not, as cloud (False).
+    A big variation in the red band in comparision with the variation in the blue band indicates that the variation in
+    the blue band is possibly not due to a cloud.
 
-    :param str date: The date of the image which is analysed at the moment.
+    :param  str date: The date of the image which is analysed at the moment.
     :param int row: The row of the pixel.
     :param int col: The column of the pixel.
     :param object dic_values: The dictionary with the dates and the pixel values of the image as arrays.
     :param object dic_mask: The dictionary with the dates and the cloud mask for the images.
-    :return: True if cloud free pixel, False if cloudy pixel
+    :param int par2: The percentage of variation between the red and the blue band.
+    :return: True if the variation of the blue band is bigger (cloud) and false if it is not (not cloud).
     """
+    ref_blue = search_reference(dic_values, dic_mask, row, col, "blue")
+    ref_red = search_reference(dic_values, dic_mask, row, col, "red")
 
-    reference_values = search_reference(dic_values, dic_mask, row, col, "red")
+    value_ref_red = ref_red[1]
+    current_value_red = dic_values["red"][date][row, col]
 
-    date_ref = datetime.datetime.strptime(reference_values[0], "%Y-%m-%d") # extracts the pixel value of an image
-    value_ref = reference_values[1]  # extracts the pixel value of the reference image
+    value_ref_blue = ref_blue[1]
+    current_value_blue = dic_values["blue"][date][row, col]
 
-    current_date = datetime.datetime.strptime(date, "%Y-%m-%d")
-    current_value = dic_values["red"][date][row, col]
-
-    if current_value - value_ref > 150 * (
-                1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
+    if (current_value_red - value_ref_red) > par2 * (current_value_blue - value_ref_blue):
         return True
     else:
         return False
@@ -114,24 +111,26 @@ def analysis_window(dic, date, row, col, size, edge='nan'):
     return result
 
 
-def cor_test3(array1, array2):
+def cor_test3(array1, array2, corr):
     """
-    Calculate the correlation between two arrays and return True if this is above 50%.
+    Calculate the correlation between two arrays and return True if this is above a given coefficient.
 
     :param object array1: The first array.
     :param object array2: The second array.
-    :return: True if the correlation is above 50% and False if not.
+    :param int corr: The correlation coefficient above which True is returned.
+    :return: True if the correlation is above the given correlation coefficient and False if not.
     """
     cov = np.nanmean((array1 - np.nanmean(array1)) * (array2 - np.nanmean(array2)))
     max_cov = np.nanstd(array1) * np.nanstd(array2)
     result = abs(cov / max_cov)
-    if result > 0.5:
+
+    if result > corr:
         return True
     else:
         return False
 
 
-def mtcd(date, row, col, size, dic_values, dic_mask):
+def mtcd(date, row, col, par1, par2, size, corr, dic_values, dic_mask):
     """
     Run the multi temporal cloud detection test to identify if a pixel is cloud free or not.
 
@@ -143,13 +142,16 @@ def mtcd(date, row, col, size, dic_values, dic_mask):
     :param int row: The row of the pixel.
     :param int col: The column of the pixel.
     :param int size: The size of the analysis window.
+    :param int par1: The percentage of variation in the blue band.
+    :param int par2: The percentage of variation in the red band.
+    :param int corr: The correlation coefficient above which True is returned.
     :param object dic_values: The dictionary with the dates and the pixel values of the image as arrays.
     :param object dic_mask: The dictionary with the dates and the cloud mask for the images.
     :return: np.nan if the pixel is a cloud and True if not.
     """
 
-    Test_1 = mtcd_test1(date, row, col, dic_values, dic_mask)
-    Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask)
+    Test_1 = mtcd_test1(date, row, col, dic_values, dic_mask, par1)
+    Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
 
     reference_values = search_reference(dic_values, dic_mask, row, col, "blue")
     date_ref = reference_values[0]
@@ -157,9 +159,9 @@ def mtcd(date, row, col, size, dic_values, dic_mask):
     array_current_date = analysis_window(dic_values, date, row, col, size, edge='nan')
     array_reference_date = analysis_window(dic_values, date_ref, row, col, size, edge='nan')
 
-    Test_3 = cor_test3(array_current_date, array_reference_date)
+    Test_3 = cor_test3(array_current_date, array_reference_date, corr)
 
-    if Test_1 == True and Test_2 == False and Test_3 == False:
+    if Test_1 == True and Test_2 == True and Test_3 == False:
         return np.nan
     else:
         return True
