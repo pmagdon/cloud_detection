@@ -23,7 +23,7 @@ dictionary_blue_red = {"blue": {}, "red": {}}
 
 for images in image_set:
     # reads all the image files in the list
-    import_image(images, 3, 1, dictionary_blue_red)
+    import_image(images, 1, 3, dictionary_blue_red)
 
 #timeseries = extract_timeseries(dictionary_blue_red, "blue", 0, 0)
 
@@ -41,7 +41,8 @@ import_cloudfree_reference("data/2015-03-19.tif",dictionary_masked)
 #for date in [key for key in dictionary_blue_red["blue"]]:
 #    cloud_mask(date, 5, dictionary_blue_red, dictionary_masked)
 
-cloud_mask("2015-04-09",0.5, 1, 31, 0.9, dictionary_blue_red, dictionary_masked)
+cloud_mask("2015-04-09",1.5, 1.5, 13, 0.55, dictionary_blue_red, dictionary_masked)
 
 
-array2raster("data/2015-04-09.tif", 'cm_ws_test1_05_test2_1.tiff', 5, 5, dictionary_masked, "2015-04-09")
+array2raster("data/2015-04-09.tif", 'cm_1.5_1.5_13_0.55.tiff', 5, 5, dictionary_masked, "2015-04-09")
+

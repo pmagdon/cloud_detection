@@ -67,9 +67,9 @@ def mtcd_test2(date, row, col, dic_values, dic_mask, par2):
     current_value_blue = dic_values["blue"][date][row, col]
 
     if (current_value_red - value_ref_red) > par2 * (current_value_blue - value_ref_blue):
-        return True
-    else:
         return False
+    else:
+        return True
 
 
 def analysis_window(dic, date, row, col, size, edge='nan'):
@@ -125,9 +125,9 @@ def cor_test3(array1, array2, corr):
     result = abs(cov / max_cov)
 
     if result > corr:
-        return True
-    else:
         return False
+    else:
+        return True
 
 
 def mtcd(date, row, col, par1, par2, size, corr, dic_values, dic_mask):
@@ -161,7 +161,7 @@ def mtcd(date, row, col, par1, par2, size, corr, dic_values, dic_mask):
 
     Test_3 = cor_test3(array_current_date, array_reference_date, corr)
 
-    if Test_1 == True and Test_2 == True and Test_3 == False:
+    if Test_1 == True and Test_2 == True and Test_3 == True:
         return np.nan
     else:
         return True
