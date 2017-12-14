@@ -2,7 +2,7 @@
 
 def search_reference(dic_values, dic_mask, row, col, band_name):
     """
-    Search and return the most recent cloud free value and its date before the current date.
+    Search and return the most recent cloud free value of the time series and its date before the current date.
 
     Extract all dates previous to the date of the current analysed image by accessing the keys from the masked
     dictionary, which contains the cloud masks for the images analysed until the moment. For these dates, extract

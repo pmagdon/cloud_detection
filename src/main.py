@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from src.first_import import first_import
 from src.import_image import import_image, import_cloudfree_reference
 from src.timeseries import extract_timeseries
@@ -10,12 +11,13 @@ from src.array_to_raster import array2raster
 image_set = []
 # empty list to be filled up with the file paths of the images
 
-first_import("data/2015-03-19.tif", image_set)
-first_import("data/2015-04-09.tif", image_set)
-first_import("data/2015-04-19.tif", image_set)
+files = os.listdir("C:/Users/anpla/PycharmProjects/cloud_detection/data")
+# reads the names of the files in the given directory into a list
 
-# imports the file paths to the list. Output: list updated
-# to do: import all the images of a folder at one time
+for file in files:
+    # for loop to import all the file paths of the files in the folder data into the list image_set.
+    # Output: list updated
+    first_import("data/" + file, image_set)
 
 dictionary_blue_red = {"blue": {}, "red": {}}
 # this empty nested dictionary will be updated with the arrays of numbers which correspond to the pixel reflectance
@@ -41,8 +43,8 @@ import_cloudfree_reference("data/2015-03-19.tif",dictionary_masked)
 #for date in [key for key in dictionary_blue_red["blue"]]:
 #    cloud_mask(date, 5, dictionary_blue_red, dictionary_masked)
 
-cloud_mask("2015-04-09",1.5, 1.5, 13, 0.55, dictionary_blue_red, dictionary_masked)
+cloud_mask("2015-07-04",1.5, 1.5, 13, 0.55, dictionary_blue_red, dictionary_masked)
 
 
-array2raster("data/2015-04-09.tif", 'cm_1.5_1.5_13_0.55.tiff', 5, 5, dictionary_masked, "2015-04-09")
+array2raster("data/2015-05-15.tif", 'cm_2015-05-15.tiff', 5, 5, dictionary_masked, "2015-05-15")
 

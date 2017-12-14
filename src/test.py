@@ -1,13 +1,5 @@
 import numpy as np
 
-image = rasterio.open("data/2015-04-09.tif")
-bounds = image.bounds
-
-origins = [bounds[0], bounds[1]]
-
-array2raster('cloud_mask.tiff', origins, 5, 5, array)
-main('cloud_mask.tiff', origins, 5, 5, array)
-
 ######## Search function example ###########
 
 test_dic = {"date0": np.matrix([[0,0],[np.nan, np.nan]]), "date1": np.full((3, 3), 1, int),
