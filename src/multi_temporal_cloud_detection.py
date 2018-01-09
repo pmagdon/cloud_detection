@@ -1,7 +1,7 @@
 import datetime
 import math
 import numpy as np
-from src.search_reference import search_reference
+from src.search_reference import search_reference, search_references_list
 
 
 def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
@@ -33,7 +33,14 @@ def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
     current_date = datetime.datetime.strptime(date, "%Y-%m-%d")
     current_value = dic_values["blue"][date][row, col]
 
-    if current_value - value_ref > par1 * (
+    current_value_mean = np.nanmean(dic_values["blue"][date])
+    ref_value_mean = np.nanmean(dic_values["blue"][reference[0]])
+    if current_value_mean / ref_value_mean > 1.5 or current_value_mean / ref_value_mean < 0.5:
+        par1 *= 1.5
+
+    if current_value == 0 and current_value_mean == 0:
+        return -999
+    elif current_value - value_ref > par1 * (
         1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
         return True
     else:
@@ -96,7 +103,7 @@ def analysis_window(dic, date, row, col, size, edge='nan'):
     if size%2 == 0:
         raise ValueError(" Size needs to be odd!")
     if edge != 'nan':
-        raise ValueError(" Edge argument needs to of 'nan', ...")
+        raise ValueError(" Edge argument needs to be 'nan'")
 
     half_window = math.floor(size / 2)
 
@@ -151,6 +158,13 @@ def mtcd(date, row, col, par1, par2, size, corr, dic_values, dic_mask):
     """
 
     Test_1 = mtcd_test1(date, row, col, dic_values, dic_mask, par1)
+
+    if Test_1 == -999:
+        return -999
+
+    if Test_1 is False:
+        return True
+
     Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
 
     reference_values = search_reference(dic_values, dic_mask, row, col, "blue")
@@ -161,10 +175,15 @@ def mtcd(date, row, col, par1, par2, size, corr, dic_values, dic_mask):
 
     Test_3 = cor_test3(array_current_date, array_reference_date, corr)
 
-    if Test_1 == True and Test_2 == True and Test_3 == True:
-        return np.nan
+    if Test_1 is True and Test_2 is True and Test_3 is True:
+        return False
     else:
         return True
+
+
+
+
+
 
 
 
