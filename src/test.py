@@ -82,4 +82,37 @@ def mtcd(date, row, col, par1, par2, window_size, corr, dic_values, dic_mask):
     else:
         return True
 
+def cor_test3(array_current_date, array_reference_date, cor_coeff):
+    cov = np.nanmean((array_current_date - np.nanmean(array_current_date)) * (array_reference_date - np.nanmean(array_reference_date)))
+    max_cov = np.nanstd(array_current_date) * np.nanstd(array_reference_date)
+    result = abs(cov / max_cov)
+    return result
+    #if result > cor_coeff:
+    #   return True
+    #else:
+    #    return False
 
+
+
+
+def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, corr):
+
+    dates_values = search_references_list(dic_values, dic_mask, row, col, "blue")[0]
+
+    array_current_date = analysis_window(dic_values, date, row, col, window_size, edge='nan')
+    arrays_previous_dates = []
+
+    for date in dates_values:
+        arrays_previous_dates.append(analysis_window(dic_values, date, row, col, window_size))
+
+    correlations = []
+
+    for array in arrays_previous_dates:
+        correlations.append(cor_test3(array_current_date, array, corr))
+
+    Any_High_correlation = True in correlations
+
+    if Any_High_correlation is True:
+        return True
+    else:
+        return False

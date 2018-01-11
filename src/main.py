@@ -42,10 +42,10 @@ import_cloudfree_reference("data/2015-03-19.tif", dictionary_masked)
 # the import is a matrix of the size of the image filled with True values
 
 for date in list(dictionary_blue_red["blue"].keys())[1:]:
-    cloud_mask(date, 3, 150, 7, 0.50, dictionary_blue_red, dictionary_masked)
+    cloud_mask(date, 3, 150, 7, 0.75, dictionary_blue_red, dictionary_masked)
 
 for mask in dictionary_masked:
-    array2raster("data/"+mask+".tif", "newtest3_3_150_7_50_"+mask+".tiff", 5, 5, dictionary_masked, mask)
+    array2raster("data/"+mask+".tif", "t3.mean_3_150_7_75_"+mask+".tiff", 5, 5, dictionary_masked, mask)
 
 # cloud_mask("2015-05-15", 1.5, 1.5, 13, 0.55, dictionary_blue_red, dictionary_masked)
 # array2raster("data/2015-03-19.tif", 'cm_2015-03-19.tiff', 5, 5, dictionary_masked, "2015-03-19")

@@ -36,7 +36,7 @@ def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
     current_value_mean = np.nanmean(dic_values["blue"][date])
     ref_value_mean = np.nanmean(dic_values["blue"][reference[0]])
     if current_value_mean / ref_value_mean > 1.5 or current_value_mean / ref_value_mean < 0.5:
-        par1 *= 1.6
+        par1 *= 1.5
 
     if current_value == 0 and current_value_mean == 0:
         return -999
@@ -74,9 +74,9 @@ def mtcd_test2(date, row, col, dic_values, dic_mask, par2):
     current_value_blue = dic_values["blue"][date][row, col]
 
     if (current_value_red - value_ref_red) > par2 * (current_value_blue - value_ref_blue):
-        return False
-    else:
         return True
+    else:
+        return False
 
 
 def analysis_window(dic, date, row, col, size, edge='nan'):
@@ -118,24 +118,15 @@ def analysis_window(dic, date, row, col, size, edge='nan'):
     return result
 
 
-def cor_test3(array1, array2, corr):
-    """
-    Calculate the correlation between two arrays and return True if this is above a given coefficient.
-
-    :param object array1: The first array.
-    :param object array2: The second array.
-    :param int corr: The correlation coefficient above which True is returned.
-    :return: True if the correlation is above the given correlation coefficient and False if not.
-    """
-    cov = np.nanmean((array1 - np.nanmean(array1)) * (array2 - np.nanmean(array2)))
-    max_cov = np.nanstd(array1) * np.nanstd(array2)
+def cor_test3(array_current_date, array_reference_date, cor_coeff):
+    cov = np.nanmean((array_current_date - np.nanmean(array_current_date)) * (array_reference_date - np.nanmean(array_reference_date)))
+    max_cov = np.nanstd(array_current_date) * np.nanstd(array_reference_date)
     result = abs(cov / max_cov)
-
-    if result > corr:
-        return False
-    else:
-        return True
-
+    return result
+    #if result > cor_coeff:
+    #    return True
+    #else:
+    #    return False
 
 def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, corr):
 
@@ -152,12 +143,37 @@ def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, corr):
     for array in arrays_previous_dates:
         correlations.append(cor_test3(array_current_date, array, corr))
 
-    if False in correlations is True:
-        return False
-    else:
-        return True
+    mean_cor = np.mean(correlations)
 
-def mtcd(date, row, col, par1, par2, window_size, corr, dic_values, dic_mask):
+    if mean_cor > corr:
+        return True
+    else:
+        return False
+    #Any_High_correlation = True in correlations
+    #if Any_High_correlation is True:
+    #    return True
+    #else:
+    #    return False
+
+def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mask):
+    """
+    Run the multi temporal cloud detection test to identify if a pixel is cloud free or not.
+
+    Run the three tests. For the third one, first search the reference value and date and define the two analysis
+    windows in order to run the test 3. Check the result of the three tests and return np.nan for cloud pixels only if
+    the first test returns true and the second and third false.
+
+    :param str date: The date of the image.
+    :param int row: The row of the pixel.
+    :param int col: The column of the pixel.
+    :param int window_size: The size of the analysis window.
+    :param int par1: The percentage of variation in the blue band.
+    :param int par2: The percentage of variation in the red band.
+    :param int cor_coeff: The correlation coefficient above which True is returned.
+    :param object dic_values: The dictionary with the dates and the pixel values of the image as arrays.
+    :param object dic_mask: The dictionary with the dates and the cloud mask for the images.
+    :return: np.nan if the pixel is a cloud and True if not.
+    """
 
     Test_1 = mtcd_test1(date, row, col, dic_values, dic_mask, par1)
 
@@ -169,14 +185,9 @@ def mtcd(date, row, col, par1, par2, window_size, corr, dic_values, dic_mask):
 
     Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
 
-    Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, corr)
-    if Test_1 is True and Test_2 is True and Test_3 is True:
+    Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
+
+    if Test_1 is True and Test_2 is False and Test_3 is False:
         return False
     else:
         return True
-
-
-
-
-
-
