@@ -1,5 +1,6 @@
 from src.multi_temporal_cloud_detection import mtcd
 import numpy as np
+import tqdm
 
 def cloud_mask(date, par1, par2, size, corr, dic_values, dic_mask):
     """
@@ -18,13 +19,20 @@ def cloud_mask(date, par1, par2, size, corr, dic_values, dic_mask):
     nrow = dic_values["blue"][date].shape[0]
     ncol = dic_values["blue"][date].shape[1]
 
-    cloud_mask_list = [mtcd(date, r, c, par1, par2, size, corr, dic_values, dic_mask)
-                       for r in range(0, nrow)
-                       for c in range(0, ncol)]
+    total = nrow*ncol
+    pbar = tqdm.tqdm(total=total)
+    cloud_mask_list=[]
+
+    for r in range(0,nrow):
+        for c in range(0,ncol):
+            cloud_mask_list.append(mtcd(date, r, c, par1, par2, size, corr, dic_values, dic_mask))
+            pbar.update(1)
+    pbar.close()
 
     cloud_mask_array = np.asarray(cloud_mask_list).reshape(nrow, ncol)
 
     dic_mask.update({date: cloud_mask_array})
 
-    print("Dictionary masked updated")
+    print("Dictionary masked of date %s updated"%(date))
+
 
