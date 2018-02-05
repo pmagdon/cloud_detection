@@ -1,6 +1,6 @@
 from src.multi_temporal_cloud_detection import mtcd
 import numpy as np
-import tqdm
+from tqdm import tqdm
 
 def cloud_mask(date, par1, par2, size, corr, dic_values, dic_mask):
     """
@@ -21,7 +21,7 @@ def cloud_mask(date, par1, par2, size, corr, dic_values, dic_mask):
 
     total = nrow*ncol
     pbar = tqdm.tqdm(total=total)
-    cloud_mask_list=[]
+    cloud_mask_list = []
 
     for r in range(0,nrow):
         for c in range(0,ncol):

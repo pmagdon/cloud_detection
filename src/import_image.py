@@ -7,8 +7,9 @@ def import_image(file, blue_band, red_band, dic):
         Import the blue and red band of an image into a dictionary.
 
         Open the image file, read the values of the selected bands and of the acquisition date and update a nested
-        dictionary with these values. The nested dictionary has the next structure:
-        {band1:{date:values, ...},band2:{date:values,...}
+        dictionary with these values. If a value is 0, is replaced with np.nan.
+        The nested dictionary has the next structure:
+       {band1:{date:values, ...},band2:{date:values,...}
 
     :param str file: The input file.
     :param int blue_band: The number of the blue band.
@@ -19,9 +20,15 @@ def import_image(file, blue_band, red_band, dic):
     """
 
     im = rasterio.open(file)
+
     im_blue_band = im.read(blue_band)
     im_red_band = im.read(red_band)
+
+    im_blue_band[im_blue_band == 0] = np.nan
+    im_red_band[im_red_band == 0] = np.nan
+
     date = im.tags()['Acquisition_DateTime'][0:10]
+
     dic["blue"].update({date: im_blue_band})
     dic["red"].update({date: im_red_band})
     print("Dictionary updated")

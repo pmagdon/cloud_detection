@@ -1,7 +1,7 @@
 import datetime
 import math
 import numpy as np
-from src.search_reference import search_reference, search_references_list
+from src.search_reference import search_references_list
 
 
 def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
@@ -25,20 +25,20 @@ def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
     :return: True if cloudy pixel, False if cloud free pixel
     """
 
-    reference = search_reference(dic_values, dic_mask, row, col, "blue")
+    reference = search_references_list(dic_values, dic_mask, row, col, "blue")
 
-    date_ref = datetime.datetime.strptime(reference[0], "%Y-%m-%d")
-    value_ref = reference[1]
+    date_ref = datetime.datetime.strptime(reference[0][-1], "%Y-%m-%d")
+    value_ref = reference[1][-1]
 
     current_date = datetime.datetime.strptime(date, "%Y-%m-%d")
     current_value = dic_values["blue"][date][row, col]
 
     current_value_mean = np.nanmean(dic_values["blue"][date])
-    ref_value_mean = np.nanmean(dic_values["blue"][reference[0]])
+    ref_value_mean = np.nanmean(dic_values["blue"][reference[0][-1]])
     if current_value_mean / ref_value_mean > 1.5 or current_value_mean / ref_value_mean < 0.5:
         par1 *= 1.5
 
-    if current_value == 0 and current_value_mean == 0:
+    if math.isnan(current_value) is True:
         return -999
     elif current_value - value_ref > par1 * (
         1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
@@ -64,13 +64,13 @@ def mtcd_test2(date, row, col, dic_values, dic_mask, par2):
     :param int par2: The percentage of variation between the red and the blue band.
     :return: True if the variation of the blue band is bigger (cloud) and false if it is not (not cloud).
     """
-    ref_blue = search_reference(dic_values, dic_mask, row, col, "blue")
-    ref_red = search_reference(dic_values, dic_mask, row, col, "red")
+    ref_blue = search_references_list(dic_values, dic_mask, row, col, "blue")
+    ref_red = search_references_list(dic_values, dic_mask, row, col, "red")
 
-    value_ref_red = ref_red[1]
+    value_ref_red = ref_red[1][-1]
     current_value_red = dic_values["red"][date][row, col]
 
-    value_ref_blue = ref_blue[1]
+    value_ref_blue = ref_blue[1][-1]
     current_value_blue = dic_values["blue"][date][row, col]
 
     if (current_value_red - value_ref_red) > par2 * (current_value_blue - value_ref_blue):
@@ -119,7 +119,15 @@ def analysis_window(dic, date, row, col, size, edge='nan'):
 
 
 def cor_test3(array_current_date, array_reference_date, cor_coeff):
-    cov = np.nanmean((array_current_date - np.nanmean(array_current_date)) * (array_reference_date - np.nanmean(array_reference_date)))
+    """
+
+    :param array_current_date:
+    :param array_reference_date:
+    :param cor_coeff:
+    :return:
+    """
+    cov = np.nanmean((array_current_date - np.nanmean(array_current_date)) *
+                     (array_reference_date - np.nanmean(array_reference_date)))
     max_cov = np.nanstd(array_current_date) * np.nanstd(array_reference_date)
     result = abs(cov / max_cov)
 
@@ -128,8 +136,24 @@ def cor_test3(array_current_date, array_reference_date, cor_coeff):
     else:
         return False
 
-def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, corr):
+def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
+    """
+    Save the dates of the 10 most recent dates of pixels that are cloud free. Use the analysis_window function to
+    extract the pixel neighbourhood values within an analysis window for the 10 most recent cloud free pixels
+    (array_previous_dates) as well as for the pixel value from the current date (array_current_date). Use the cor_test3
+    function to test if any of the correlations between array_current date and each of the arrays in the list
+    arrays_previous_dates is above a certain correlation coefficient. If this is the case, return True, else return
+    False.
 
+    :param date:
+    :param row:
+    :param col:
+    :param dic_values:
+    :param dic_mask:
+    :param window_size:
+    :param corr:
+    :return:
+    """
     dates_values = search_references_list(dic_values, dic_mask, row, col, "blue")[0]
 
     array_current_date = analysis_window(dic_values, date, row, col, window_size, edge='nan')
@@ -138,15 +162,21 @@ def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, corr):
     for date in dates_values:
         arrays_previous_dates.append(analysis_window(dic_values, date, row, col, window_size))
 
+    #current_value_mean = np.nanmean(dic_values["blue"][date])
+    #ref_value_mean = np.nanmean(dic_values["blue"][reference[0][-1]])
+    #if current_value_mean / ref_value_mean > 1.5 or current_value_mean / ref_value_mean < 0.5:
+    #    cor_coeff *= 1.5
+
     correlations = []
 
-    for array in arrays_previous_dates:
-        correlations.append(cor_test3(array_current_date, array, corr))
+    for array_reference_date in arrays_previous_dates:
+        correlations.append(cor_test3(array_current_date, array_reference_date, cor_coeff))
 
     if True in correlations:
         return True
     else:
         return False
+
 
 def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mask):
     """
