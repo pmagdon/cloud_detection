@@ -1,8 +1,9 @@
-from src.multi_temporal_cloud_detection import mtcd
+from src.multi_temporal_cloud_detection import mtcd, mtcd_test1
 import numpy as np
 from tqdm import tqdm
 
-def cloud_mask(date, par1, par2, size, corr, dic_values, dic_mask):
+
+def cloud_mask(date, par1, par2, size, corr, dic_values, dic_mask, test_version):
     """
     Create a cloud mask from an image and put it in the corresponding dictionary.
 
@@ -21,17 +22,38 @@ def cloud_mask(date, par1, par2, size, corr, dic_values, dic_mask):
 
     total = nrow*ncol
     pbar = tqdm.tqdm(total=total)
+
     cloud_mask_list = []
+    cm_list_test1 = []
+    cm_list_test2 = []
+    cm_list_test3 = []
 
-    for r in range(0,nrow):
-        for c in range(0,ncol):
-            cloud_mask_list.append(mtcd(date, r, c, par1, par2, size, corr, dic_values, dic_mask))
-            pbar.update(1)
-    pbar.close()
+    if test_version == 0:
 
-    cloud_mask_array = np.asarray(cloud_mask_list).reshape(nrow, ncol)
+        for r in range(0,nrow):
+            for c in range(0,ncol):
+                cloud_mask_list.append(mtcd(date, r, c, par1, par2, size, corr, dic_values, dic_mask, 0))
+                pbar.update(1)
+        pbar.close()
 
-    dic_mask.update({date: cloud_mask_array})
+        cloud_mask_array = np.asarray(cloud_mask_list).reshape(nrow, ncol)
+
+        dic_mask.update({date: cloud_mask_array})
+
+
+        for r in range(0,nrow):
+            for c in range(0,ncol):
+                cm_list_test1.append(mtcd(date, r, c, par1, par2, size, corr, dic_values, dic_mask, 1)[0])
+                cm_list_test2.append(mtcd(date, r, c, par1, par2, size, corr, dic_values, dic_mask, 1)[1])
+                cm_list_test3.append(mtcd(date, r, c, par1, par2, size, corr, dic_values, dic_mask, 1)[2])
+
+        cloud_mask_array1 = np.asarray(cm_list_test1).reshape(nrow, ncol)
+        cloud_mask_array2 = np.asarray(cm_list_test2).reshape(nrow, ncol)
+        cloud_mask_array3 = np.asarray(cm_list_test3).reshape(nrow, ncol)
+        cloud_mask_array = np.
+
+
+        dic_mask.update({date: cloud_mask_array})
 
     print("Dictionary masked of date %s updated"%(date))
 

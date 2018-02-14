@@ -178,7 +178,7 @@ def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
         return False
 
 
-def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mask):
+def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mask, test_version):
     """
     Run the multi temporal cloud detection test to identify if a pixel is cloud free or not.
 
@@ -203,14 +203,26 @@ def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mas
     if Test_1 == -999:
         return -999
 
-    if Test_1 is False:
-        return True
+    elif Test_1 is False:
+        return True  # not cloud
 
-    Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
+    elif Test_1 is True:
 
-    Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
+        Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
 
-    if Test_1 is True and Test_2 is False and Test_3 is False:
-        return False
-    else:
-        return True
+        Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
+
+    if test_version == 0:
+        if Test_1 is True and Test_2 is False and Test_3 is False:
+            return False
+        else:
+            return True
+
+    elif test_version == 1:
+        if Test_1 is True:
+            return Test_1, Test_2, Test_3
+        elif Test_1 == -999:
+            return Test_1, -999, -999
+        elif Test_1 is False:
+            return True, -999, -999
+
