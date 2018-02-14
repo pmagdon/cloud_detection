@@ -2,7 +2,7 @@ import gdal, osr
 import rasterio
 
 
-def array2raster(im_source, fname_nraster, pixel_width, pixel_height, dict, date, test_version):
+def array2raster(im_source, fname_nraster, pixel_width, pixel_height, dict, date):
     """
     Convert an array stored in a dictionary into a raster file.
 
@@ -26,23 +26,19 @@ def array2raster(im_source, fname_nraster, pixel_width, pixel_height, dict, date
     originX = bounds[0]
     originY = bounds[1]
 
-    if test_version is 1:
+    driver = gdal.GetDriverByName('GTiff')
+    outRaster = driver.Create(fname_nraster, cols, rows, 3, gdal.GDT_Byte)
+    outRaster.SetGeoTransform((originX, pixel_width, 0, originY, 0, pixel_height))
+    outband = outRaster.GetRasterBand(1)
+    outband.WriteArray(reversed_arr)
 
-        driver = gdal.GetDriverByName('GTiff')
-        outRaster = driver.Create(fname_nraster, cols, rows, 3, gdal.GDT_Byte)
-        outRaster.SetGeoTransform((originX, pixel_width, 0, originY, 0, pixel_height))
-        for i in nband:
-            outband = outRaster.GetRasterBand(i)
-            outband.WriteArray(reversed_arr)
+    outRasterSRS = osr.SpatialReference()
+    outRasterSRS.ImportFromEPSG(32632)
+    outRaster.SetProjection(outRasterSRS.ExportToWkt())
+    outband.FlushCache()
 
-        outRasterSRS = osr.SpatialReference()
-        outRasterSRS.ImportFromEPSG(32632)
-        outRaster.SetProjection(outRasterSRS.ExportToWkt())
-        outband.FlushCache()
+    print("Array converted to raster")
 
-        print("Array converted to raster")
-
-    else:
 
 
 

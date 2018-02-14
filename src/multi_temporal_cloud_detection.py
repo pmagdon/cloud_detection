@@ -162,11 +162,6 @@ def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
     for date in dates_values:
         arrays_previous_dates.append(analysis_window(dic_values, date, row, col, window_size))
 
-    #current_value_mean = np.nanmean(dic_values["blue"][date])
-    #ref_value_mean = np.nanmean(dic_values["blue"][reference[0][-1]])
-    #if current_value_mean / ref_value_mean > 1.5 or current_value_mean / ref_value_mean < 0.5:
-    #    cor_coeff *= 1.5
-
     correlations = []
 
     for array_reference_date in arrays_previous_dates:
@@ -200,29 +195,27 @@ def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mas
 
     Test_1 = mtcd_test1(date, row, col, dic_values, dic_mask, par1)
 
-    if Test_1 == -999:
-        return -999
-
-    elif Test_1 is False:
-        return True  # not cloud
-
-    elif Test_1 is True:
-
-        Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
-
-        Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
-
     if test_version == 0:
-        if Test_1 is True and Test_2 is False and Test_3 is False:
-            return False
-        else:
-            return True
+        if Test_1 == -999:
+            return -999
+        elif Test_1 is False:
+            return True  # not cloud
+        elif Test_1 is True:
+            Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
+            Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
+            if Test_1 is True and Test_2 is False and Test_3 is False:
+                return False
+            else:
+                return True
 
     elif test_version == 1:
-        if Test_1 is True:
-            return Test_1, Test_2, Test_3
-        elif Test_1 == -999:
+        if Test_1 == -999:
             return Test_1, -999, -999
         elif Test_1 is False:
             return True, -999, -999
+        elif Test_1 is True:
+            Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
+            Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
+            return Test_1, Test_2, Test_3
+
 
