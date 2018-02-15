@@ -100,7 +100,7 @@ def analysis_window(dic, date, row, col, size, edge='nan'):
     :return: The window as array with the image values.
     """
 
-    if size%2 == 0:
+    if size % 2 == 0:
         raise ValueError(" Size needs to be odd!")
     if edge != 'nan':
         raise ValueError(" Edge argument needs to be 'nan'")
@@ -135,6 +135,7 @@ def cor_test3(array_current_date, array_reference_date, cor_coeff):
         return True
     else:
         return False
+
 
 def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
     """
@@ -173,7 +174,7 @@ def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
         return False
 
 
-def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mask, test_version):
+def mtcd(date, row, col, par1, par2, window_size, cor_coef, dic_values, dic_mask, test_version):
     """
     Run the multi temporal cloud detection test to identify if a pixel is cloud free or not.
 
@@ -187,7 +188,7 @@ def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mas
     :param int window_size: The size of the analysis window.
     :param int par1: The percentage of variation in the blue band.
     :param int par2: The percentage of variation in the red band.
-    :param int cor_coeff: The correlation coefficient above which True is returned.
+    :param int cor_coef: The correlation coefficient above which True is returned.
     :param object dic_values: The dictionary with the dates and the pixel values of the image as arrays.
     :param object dic_mask: The dictionary with the dates and the cloud mask for the images.
     :return: np.nan if the pixel is a cloud and True if not.
@@ -202,7 +203,7 @@ def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mas
             return True  # not cloud
         elif Test_1 is True:
             Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
-            Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
+            Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coef)
             if Test_1 is True and Test_2 is False and Test_3 is False:
                 return False
             else:
@@ -212,10 +213,10 @@ def mtcd(date, row, col, par1, par2, window_size, cor_coeff, dic_values, dic_mas
         if Test_1 == -999:
             return Test_1, -999, -999
         elif Test_1 is False:
-            return True, -999, -999
+            return False, -999, -999
         elif Test_1 is True:
             Test_2 = mtcd_test2(date, row, col, dic_values, dic_mask, par2)
-            Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff)
+            Test_3 = mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coef)
             return Test_1, Test_2, Test_3
 
 
