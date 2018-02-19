@@ -31,8 +31,8 @@ def search_references_list(dic_values, dic_mask, row, col, band_name):
 
     indices_not_cloud = [index for index, value in enumerate(mask_pixel) if value == 1][-10:]
 
-    data_cloudfree = [key_images[i] for i in indices_not_cloud]
+    date_cloudfree = [key_images[i] for i in indices_not_cloud]
     values_cloudfree = [value_pixel[i] for i in indices_not_cloud]
 
-    return data_cloudfree, values_cloudfree
+    return date_cloudfree, values_cloudfree
 
