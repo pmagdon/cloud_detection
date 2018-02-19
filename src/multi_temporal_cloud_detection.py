@@ -40,8 +40,7 @@ def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
 
     if math.isnan(current_value) is True:
         return -999
-    elif current_value - value_ref > par1 * (
-        1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
+    elif current_value - value_ref > par1:
         return True
     else:
         return False
@@ -152,10 +151,12 @@ def mtcd_test3(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
     :param dic_values:
     :param dic_mask:
     :param window_size:
-    :param corr:
+    :param cor_coeff:
     :return:
     """
-    dates_values = search_references_list(dic_values, dic_mask, row, col, "blue")[0]
+    #dates_values = search_references_list(dic_values, dic_mask, row, col, "blue")[0]
+
+    dates_values = [key for key, value in dic_mask.items()][-10:]
 
     array_current_date = analysis_window(dic_values, date, row, col, window_size, edge='nan')
     arrays_previous_dates = []

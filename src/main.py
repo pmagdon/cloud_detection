@@ -4,20 +4,19 @@ from src.first_import import first_import
 from src.import_image import import_image, import_cloudfree_reference
 from src.timeseries import extract_timeseries
 from src.cloud_mask import cloud_mask
-from src.array_to_raster import array2raster
+from src.array_to_raster import array2raster, array2raster_3b
 
 #  Run
 
 image_set = []
 # empty list to be filled up with the file paths of the images
 
-files = os.listdir("C:/Users/anpla/PycharmProjects/cloud_detection/data")
+files = os.listdir("C:/Users/aplazas//hainich_clouds/500m/field")
 # reads the names of the files in the given directory into a list
-
 for file in files:
     # for loop to import all the file paths of the files in the folder data into the list image_set.
     # Output: list updated
-    first_import("C:/Users/anpla/PycharmProjects/cloud_detection/data/" + file, image_set)
+    first_import("C:/Users/aplazas//hainich_clouds/500m/field/" + file, image_set)
 
 dictionary_blue_red = {"blue": {}, "red": {}}
 # this empty nested dictionary will be updated with the arrays of numbers which correspond to the pixel reflectance
@@ -37,22 +36,17 @@ dictionary_masked_test = {}
 # empty dictionary which will be updated with the cloud mask of the images indicating the date of the image
 # form of the dictionary {date: cloud_mask}
 
-import_cloudfree_reference("C:/Users/anpla/PycharmProjects/cloud_detection/data/2015-03-19.tif", dictionary_masked)
+import_cloudfree_reference("C:/Users/aplazas/hainich_clouds/500m/field/2015-03-19.tif", dictionary_masked)
 # import the first cloud free reference into the dictionary_masked. Since the first image is always cloud free, all
 # the import is a matrix of the size of the image filled with True values
 
 for date in list(dictionary_blue_red["blue"].keys())[1:]:
-    cloud_mask(date, 3, 150, 7, 0.75, dictionary_blue_red, dictionary_masked, 1, dictionary_masked_test)
+    cloud_mask(date, 2, 50, 5, 0.75, dictionary_blue_red, dictionary_masked, 1, dictionary_masked_test)
 
-#for mask in dictionary_masked:
-#    array2raster("data/"+mask+".tif", "test3_55_"+mask+".tiff", 5, 5, dictionary_masked, mask)
-
-for mask in dictionary_masked_test:
-    array2raster("C:/Users/anpla/PycharmProjects/cloud_detection/data/"+mask+".tif", "3_"+mask+".tiff", 5, 5, dictionary_masked_test, mask)
-
-# cloud_mask("2015-05-15", 1.5, 1.5, 13, 0.55, dictionary_blue_red, dictionary_masked)
-# array2raster("data/2015-03-19.tif", 'cm_2015-03-19.tiff', 5, 5, dictionary_masked, "2015-03-19")
+for mask in dictionary_masked:
+    array2raster("C:/Users/aplazas/hainich_clouds/500m/field/"+mask+".tif",
+                 "notime_2_50_5_75_"+mask+".tiff", 5, 5, dictionary_masked, mask)
 
 for mask in dictionary_masked_test:
-    array2raster_3b("C:/Users/anpla/PycharmProjects/cloud_detection/data/"+mask+".tif", "Q_"+mask+".tiff", 5, 5, dictionary_masked_test, mask)
-
+    array2raster_3b("C:/Users/aplazas/hainich_clouds/500m/field/"+mask+".tif", "notime_2_50_5_75_3b_"+mask+".tiff",
+                    5, 5, dictionary_masked_test, mask)

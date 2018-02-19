@@ -54,6 +54,8 @@ for date in list(dictionary_blue_red["blue"].keys())[1:]:
 
 #### old search reference function ####
 
+# cloud_mask("2015-05-15", 1.5, 1.5, 13, 0.55, dictionary_blue_red, dictionary_masked)
+# array2raster("data/2015-03-19.tif", 'cm_2015-03-19.tiff', 5, 5, dictionary_masked, "2015-03-19")
 
 
 #def search_reference(dic_values, dic_mask, row, col, band_name):
