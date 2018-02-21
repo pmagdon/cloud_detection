@@ -41,6 +41,7 @@ def array2raster(im_source, fname_nraster, pixel_width, pixel_height, dict, date
 
     print("Array converted to raster")
 
+
 def array2raster_3b(im_source, fname_nraster, pixel_width, pixel_height, dict, date, nbands=3):
     """
     Convert an array stored in a dictionary into a raster file.

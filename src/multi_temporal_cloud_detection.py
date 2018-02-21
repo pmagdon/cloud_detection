@@ -4,6 +4,7 @@ import numpy as np
 from src.search_reference import search_references_list
 
 
+## Test 1 ##
 def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
     """
     Test the temporal variation of reflectance on the blue band comparing it to a threshold which is a function of the
@@ -40,7 +41,8 @@ def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
 
     if math.isnan(current_value) is True:
         return -999
-    elif current_value - value_ref > par1:
+    elif current_value - value_ref > par1 * (
+        1 + (current_date - date_ref).total_seconds() / (60 * 60 * 24) / 30):
         return True
     else:
         return False

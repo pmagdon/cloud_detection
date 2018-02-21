@@ -15,7 +15,6 @@ def import_image(file, blue_band, red_band, dic):
     :param int blue_band: The number of the blue band.
     :param int red_band: The number of the red band.
     :param object dic: The image values dictionary.
-
     :return: Print the message "Dictionary updated".
     """
 
