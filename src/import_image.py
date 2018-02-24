@@ -4,12 +4,14 @@ import numpy as np
 
 def import_image(file, blue_band, red_band, dic):
     """
-    Import the blue and red band of an image into a dictionary.
+    Import the blue and red band pixel values of an image into a dictionary.
 
     Open the image file, read the values of the selected bands and of the acquisition date and update a nested
-    dictionary with these values. If a value is 0, is replaced with np.nan.
-    The nested dictionary has the next structure:
-    {band1:{date:values, ...},band2:{date:values,...}
+    dictionary. Each of the two nested dictionaries correspond to one band: blue and red.
+    The keys of the nested dictionaries will be the dates corresponding to the images and the reflectance values in
+    form of array will be the values.
+    If a value is 0, is replaced with np.nan.
+
 
     :param str file: The input file.
     :param int blue_band: The number of the blue band.

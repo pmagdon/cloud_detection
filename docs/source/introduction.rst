@@ -1,5 +1,5 @@
 Introduction
-=============
+============
 What is cloud detection and why do we need a cloud mask?
 Nowadays there is a high availability of satellite imagery and very often it can be freely downloaded from the internet.
 Contar que hay varios satélites con diferente tamaño de pixel y numero de bandas y que cada banda corresponde a un
@@ -21,3 +21,4 @@ When no thermal band available, use other characteristics of the clouds that are
 more about RapidEye. http://www.biodiversity-exploratories.de/infrastruktur/messtechnik-fernerkundung/
 (satellite characteristics)
 
+buscar literatura sobre metodos de cloud detection
