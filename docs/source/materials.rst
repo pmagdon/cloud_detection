@@ -91,10 +91,33 @@ results part.
 .. automodule:: src.timeseries
     :members:
 
-blablablabla
+Before beginning with the multi temporal cloud detection analysis, we create two new empty dictionaries that will
+store the results of this analysis, i.e. the cloud masks.::
+
+    dictionary_masked = {}
+    dictionary_masked_test = {}
+
+The keys will correspond to the date of the image and the values to the cloud masks for each image. A cloud mask for
+an image is an array with the size of the image and with one value for each pixel cell. The possible values are:
+
+    * 1 for the pixels that are considered cloud free
+    * 0 for pixels tagged as cloud
+    * -999 for the case that no data was found at this pixel of the image. Like explained in the description of the
+      import_image() function, pixels of the image with value 0 are imported as no data (np.nan).
+
+The reason to create two dictionaries is that each of them will store a different output. The dictionary_masked will
+store the cloud masks as described before and the second one serves the development of the algorithm and the analysis of
+the results since it eases the adjustment of parameters. This will be explained in detail further in the description of
+the mtcd() function.
+
+The module multi_temporal_cloud_detection is the main analysis module, since is here where we find the functions that
+correspond to the blue test, the red-blue test and the neighbourhood correlation test. The mtcd() function, which is
+also defined under this module, puts all these tests together and it is the function that determines if a given pixel is
+considered cloud or cloud free. In addition, we also find other two functions that are necessary to run the neighbourhood
+correlation test.
 
 .. automodule:: src.multi_temporal_cloud_detection
-    :members:
+    :members: mtcd_test1, mtcd_test2, analysis_window, cor_test3, mtcd_test3, mtcd
 
 lalalala
 

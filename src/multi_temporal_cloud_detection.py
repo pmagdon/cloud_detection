@@ -7,22 +7,31 @@ from src.search_reference import search_references_list
 ## Test 1 ##
 def mtcd_test1(date, row, col, dic_values, dic_mask, par1):
     """
-    Test the temporal variation of reflectance on the blue band comparing it to a threshold which is a function of the
-    time interval. A big increase (True) indicates cloud.
+    Test the temporal variation of reflectance on the blue band comparing it to a threshold. A big increase (True)
+    indicates cloud.
 
-    To compare the values of the image with the most recent cloud free reference, first extract the reference values
-    (date and pixel value) to a list with the search_reference function. Extract the current values of the blue band
-    for the selected pixel defined by its row and its column (parameters) from the values dictionary using as key the
-    given date parameter. Compare the variation between the current pixel value and the cloud free reference value with
-    a threshold that is a function of the time interval between the two images. If the pixel value variation is bigger
-    than the threshold, classify the pixel as cloud (True) and if not, as cloud free (False).
+    To compare the pixel values of the current image with the reference values, first extract the most recent cloud
+    free pixel value an corresponding date to a list with the search_reference function. Extract the current blue band
+    reflectance value of the pixel using the current date as key. The pixel is defined by its location in the image
+    through the parameters row and column.
 
-    :param str date: The date of the image which is analysed at the moment.
-    :param int row: The row of the pixel.
-    :param int col: The column of the pixel.
-    :param object dic_values: The dictionary with the dates and the pixel values of the image as arrays.
-    :param object dic_mask: The dictionary with the dates and the cloud mask for the images.
-    :param int par1: The percentage of variation in the blue band.
+    Calculate the mean reflectance for the whole reference and current image. Calculate the ratio between these two
+    means and if this ratio is beyond 1.5 or under 0.5, increase the blue parameter value multiplying by 1.5.
+
+    Compare the variation between the current pixel value and the cloud free reference value with a threshold given by
+    the blue parameter. This parameter is a function of the time interval between the two images:
+    if the images are close in time the parameter doesn't change very much, but if there are 30 days between the
+    acquisition time of the two images, the parameter doubles its value.
+
+    If the pixel value variation is bigger than the threshold, classify the pixel as cloud (True) and if not, as cloud
+    free (False).
+
+    :param str date: The date of the image which is currently analysed.
+    :param int row: The row of the image for a pixel.
+    :param int col: The column of the image for a pixel.
+    :param object dic_values: The dictionary with the dates and the pixel values of the image saved as arrays.
+    :param object dic_mask: The dictionary with the dates and the generated cloud mask for the already analysed images.
+    :param int par1: The percentage of reflectance variation in the blue band for comparision.
     :return: True if cloudy pixel, False if cloud free pixel
     """
 
