@@ -158,6 +158,7 @@ for each pixel. This increases the understanding of how the algorithm works and 
 Having this insight eases the adjustment of the parameters used in the tests and enables an easier analysis and
 development of the algorithm.
 
+
 .. automodule:: src.cloud_mask
     :members:
 
