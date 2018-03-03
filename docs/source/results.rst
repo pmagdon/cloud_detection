@@ -34,7 +34,7 @@ surface), this error will happen again and again if we compare only with the clo
 compare with the image with the low values. But if we compare with all images, this will not happen.
 Road masked as a cloud on a single date instead of a possible long duration (art).
 Correlation test enables to reclassify as unclouded images with high reflection, but sometimes reclassifies as unclouded
-the thin clouds. More in discussion (buffer)
+the thin clouds. More in discussion (buffer) g
 
 Como test 3 no es capaz de quitar todos los pixeles del camino, este se sigue marcando como nube. Como el test 1
 compara con el ultimo cloud free, vuelve a dar nube y el test 3 vuelve a quitar parte, pero no todo.
