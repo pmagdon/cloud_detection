@@ -11,12 +11,12 @@ from src.array_to_raster import array2raster, array2raster_3b
 image_set = []
 # empty list to be filled up with the file paths of the images
 
-files = os.listdir("C:/Users/anpla/data/2500m/field/field3")
+files = os.listdir("C:/Users/anpla/data/2500m/forest/forest1")
 # reads the names of the files in the given directory into a list
 for file in files:
     # for loop to import all the file paths of the files in the folder data into the list image_set.
     # Output: list updated
-    first_import("C:/Users/anpla/data/2500m/field/field3/" + file, image_set)
+    first_import("C:/Users/anpla/data/2500m/forest/forest1/" + file, image_set)
 
 dictionary_blue_red = {"blue": {}, "red": {}}
 # this empty nested dictionary will be updated with the arrays of numbers which correspond to the pixel reflectance
@@ -36,7 +36,7 @@ dictionary_masked_test = {}
 # empty dictionary which will be updated with the cloud mask of the images indicating the date of the image
 # form of the dictionary {date: cloud_mask}
 
-import_cloudfree_reference("C:/Users/anpla/data/2500m/field/field3/2015-03-19.tif", dictionary_masked)
+import_cloudfree_reference("C:/Users/anpla/data/2500m/forest/forest1/2015-03-19.tif", dictionary_masked)
 # import the first cloud free reference into the dictionary_masked. Since the first image is always cloud free, all
 # the import is a matrix of the size of the image filled with True values
 
@@ -44,9 +44,9 @@ for date in list(dictionary_blue_red["blue"].keys())[1:]:
     cloud_mask(date, 3, 2, 11, 0.70, dictionary_blue_red, dictionary_masked, 1, dictionary_masked_test)
 
 for mask in dictionary_masked:
-    array2raster("C:/Users/anpla/data/2500m/field/field3/"+mask+".tif",
+    array2raster("C:/Users/anpla/data/2500m/forest/forest1/"+mask+".tif",
                  "3_2_11_70_"+mask+".tiff", 5, 5, dictionary_masked, mask)
 
 for mask in dictionary_masked_test:
-    array2raster_3b("C:/Users/anpla/data/2500m/field/field3/"+mask+".tif", "3_2_11_70_3b"+mask+".tiff",
+    array2raster_3b("C:/Users/anpla/data/2500m/forest/forest1/"+mask+".tif", "3_2_11_70_3b"+mask+".tiff",
                     5, 5, dictionary_masked_test, mask)

@@ -128,7 +128,10 @@ store the cloud masks as arrays with the value True if the pixel is cloud free a
 dictionary will store each one of the results of the three tests. This will help the task of adjusting the parameters of
 the functions containing the three tests. How this works is explained in the description of the the cloud mask module.
 
-blablablabla reference values
+Like already mentioned, the reference values for the blue and for the red blue test should correspond to the most
+recent cloud free pixel before the date that is currently analysed. An specific function was written to find these
+values, which can be found under the search reference module.
+
 .. automodule:: src.search_reference
     :members:
 
@@ -148,16 +151,15 @@ function.
     :members: mtcd_test1, mtcd_test2, analysis_window, cor_test3, mtcd_test3, mtcd
 
 The cloud_mask() function which is stored in the cloud mask module runs the already known multi temporal cloud detection
-function over all pixels of the image. Again, we have the test version parameter. If the value of this is 0, the function
+function over all pixels of the image. Again, we find the test version parameter in this function. If its value is 0, the function
 will update the dictionary_masked with the cloud masks. If the test version parameter is set to 1, not only the
 dictionary_masked is updated, but also the dictionary_masked_test. Three arrays are stored under each date/key of this
 dictionary, each one of the arrays corresponding to the result of each test. The goal of creating this dictionary is to
 export the contained arrays into multi band rasters with three bands, each one of them corresponding to each array. This
-raster file can be open in a geospatial program, like ArcMap, which allows to easily visualize the results of each test
-for each pixel. This increases the understanding of how the algorithm works and which influence each of the tests has.
-Having this insight eases the adjustment of the parameters used in the tests and enables an easier analysis and
+raster file can be opened in a geospatial program, like ArcMap, which allows to easily visualize the results of each test
+for each pixel. This increases the understanding of how the algorithm works and which influence each of the tests has on
+the final result. Having this insight eases the adjustment of the parameters used in the tests and enables a better analysis and
 development of the algorithm.
-
 
 .. automodule:: src.cloud_mask
     :members:
@@ -167,4 +169,3 @@ bangbangbang
 .. automodule:: src.array_to_raster
     :members:
 
-enlazar con la forma de decidir los parametros.
