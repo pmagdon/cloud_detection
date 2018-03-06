@@ -253,7 +253,7 @@ def mtcd(date, row, col, blue_par, red_blue_par, window_size, cor_coef, dic_valu
             return False, -999, -999
         elif test_blue is True:
             test_red_blue = red_blue_test(date, row, col, dic_values, dic_mask, red_blue_par)
-            neighb_test = cor_array(date, row, col, dic_values, dic_mask, window_size, cor_coef)
+            neighb_test = neigh_cor(date, row, col, dic_values, dic_mask, window_size, cor_coef)
             return test_blue, test_red_blue, neighb_test
 
 

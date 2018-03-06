@@ -48,3 +48,9 @@ def search_references_list(dic_values, dic_mask, row, col, band_name):
     values_cloudfree = [value_pixel[i] for i in indices_not_cloud]
 
     return date_cloudfree, values_cloudfree
+
+
+###################################################
+
+
+

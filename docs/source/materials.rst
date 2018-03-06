@@ -57,6 +57,10 @@ next image. This is because the reference pixel should correspond to the most re
 the current image. If a pixel is tagged as cloud free, the value of this pixel will be used for cloud free reference for
 the next image.
 
+Time series of 2015 of Hainich. Rapid Eye. 5 m.
+
+
+
 Documentation
 -------------
 This algorithm was implemented using Python 3.6 in the IDE Pycharm. The functions were organised in seven different
@@ -148,24 +152,46 @@ of the results of the three tests. A detailed explanation about this output can 
 function.
 
 .. automodule:: src.multi_temporal_cloud_detection
-    :members: mtcd_test1, mtcd_test2, analysis_window, cor_test3, mtcd_test3, mtcd
+    :members: blue_test, red_blue_test, analysis_window, cor_array, neigh_cor, mtcd
 
 The cloud_mask() function which is stored in the cloud mask module runs the already known multi temporal cloud detection
 function over all pixels of the image. Again, we find the test version parameter in this function. If its value is 0, the function
 will update the dictionary_masked with the cloud masks. If the test version parameter is set to 1, not only the
 dictionary_masked is updated, but also the dictionary_masked_test. Three arrays are stored under each date/key of this
 dictionary, each one of the arrays corresponding to the result of each test. The goal of creating this dictionary is to
-export the contained arrays into multi band rasters with three bands, each one of them corresponding to each array. This
-raster file can be opened in a geospatial program, like ArcMap, which allows to easily visualize the results of each test
-for each pixel. This increases the understanding of how the algorithm works and which influence each of the tests has on
-the final result. Having this insight eases the adjustment of the parameters used in the tests and enables a better analysis and
-development of the algorithm.
+export the contained arrays into multi band raster files with three bands. How these multi band raster files help improve
+the analysis of the algorithm is explained in the next paragraph.
 
 .. automodule:: src.cloud_mask
     :members:
 
-bangbangbang
+The export of the cloud mask arrays into raster files is performed by the two functions in the module array to raster.
+The reason why we need two functions is because the first one creates a raster file of one band with the end result of
+the cloud masks and the second one creates a multi band raster file with three bands and each of the bands contains the
+results for each of the three tests run in the multi temporal cloud detection function.
+
+The one band raster files can be opened in a geospatial program, like ArcMap, to display the results. Placing the image under
+the cloud mask and setting the pixel value for the pixels tagged as cloud free to transparent in the symbology options
+allows us to get an idea of the accuracy of the cloud masks, but we can't know which specific result gave each test for
+each pixel. Being able to know this information can help us, for example, to understand the reason why a pixel that is a cloud  was
+tagged as cloud free by the algorithm. This could be because the blue test didn't identified the cloud or because it did,
+but one of the other two tests wrongly reclassified the pixel as cloud free.
+
+Loading the multi band raster files into ArcMap allows us to visualize the results of each test for each pixel. This
+increases the understanding of how the algorithm works and which influence each one of the tests has on the final result.
+Having this insight also eases the adjustment of the parameters used in the tests and this enables a better analysis and
+development of the algorithm.
 
 .. automodule:: src.array_to_raster
     :members:
+
+The adjustment of the parameters was done using clips of the image with the size 500 x 500 m to avoid long processing
+time. Three surface classes were identified in the whole image and for each class three different clips were created.
+Each clip represents a time series. Once the parameters were set, the algorithm was run in bigger images of 2500 x 2500
+m. To be able to evaluate the accuracy of this method, 50 random points of the cloud masks were created to visually ve-
+rify if the classification.
+
+
+
+
 

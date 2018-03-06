@@ -55,13 +55,13 @@ def array2raster_3b(im_source, fname_nraster, pixel_width, pixel_height, dict, d
     Create a raster file with one band based in an array stored in a dictionary.
 
     Source: https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
-    Open the image and read the image bounds to define the origin in x and y for the output raster. Access the array of
-    the given date, reverse it so that the tif looks like the array and store its shape. Fetch a driver based on the
-    short name GTiff and create a new dataset with this  driver. The size of this dataset corresponds to the shape of
-    the array. The number of bands is set to 1. Convert the pixel coordinates to map coordinates using the affine
-    transformation. This transformation needs information about the size of the pixel (width and height) and about the
-    image bounds (origin in x and in y). Write the array in the band of the created dataset. Set the coordinate system
-    and the projection reference for this dataset.
+    Open the image and read the image bounds to define the origin in x and y for the output raster. Access one of the
+    three arrays and store its shape. Fetch a driver based on the short name GTiff and create a new dataset with this
+    driver. The size of this dataset corresponds to the shape of the arrays. The number of bands is set to 3. Convert
+    the pixel coordinates to map coordinates using the affine transformation. This transformation needs information
+    about the size of the pixel (width and height) and about the image bounds (origin in x and in y). Reverse all three
+    arrays so that the tif looks like the arrays and write the three arrays into a list. Write each array in one diffe-
+    rent band of the created dataset. Set the coordinate system and the projection reference for this dataset.
 
     :param str im_source: The file path of the image to which the cloud mask belongs.
     :param str fname_nraster: The file name of the created raster.
