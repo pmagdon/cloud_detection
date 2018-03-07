@@ -4,7 +4,9 @@ Materials and methods
 Cloud detection using time series
 ---------------------------------
 Since we don´t have any thermal band in our images, we can´t use this method to identify the clouds. We will use another
-characteristic of clouds, to wit, their high reflection value in the blue spectral band. To decide if a pixel of an
+characteristic of clouds, to wit, their high reflection value in the blue spectral band. This method is already
+implemented by ...
+To decide if a pixel of an
 image is a cloud or not, we will make use of a time series, comparing images taken at the same spot with different dates.
 We will compare the value of the pixel in the blue band with the value of the same pixel coordinate in a cloud free
 pixel from a previous image. This reference value will allow us to identify a high increase in the pixel reflectance value

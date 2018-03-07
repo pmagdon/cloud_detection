@@ -16,3 +16,6 @@ Dificultades debidas a la heterogeneidad de las nubes (finas gruesas definidas n
 Sombras?
 Bordes nubes
 Paisaje distinto -> parametros siguen sirviendo?
+
+Test 2 en algunos fields funciona bastante bien y en otros no funciona nada. Cambios en fields no siempre provocan gran
+cambio en la red band.
