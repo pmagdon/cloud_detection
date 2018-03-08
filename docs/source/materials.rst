@@ -79,6 +79,11 @@ documentation. The parameters and the outputs of all functions were declared usi
 and a long description of what the function executes. This function documentation is presented hereunder along with
 an explanation of the main code and the followed steps to create the cloud masks from the raw images.
 
+The multi temporal cloud detection algorithm
+--------------------------------------------
+
+First import
+............
 The very first step is to import the images. For this, we indicate in which path are the images that we want to analyse.
 The names of the files found in this path are read and written into a list together with its path.
 The first module is called first_import and the only function in this module of the same name as the module just writes
@@ -96,6 +101,8 @@ can be accessed by the key "blue" and the second one by the key "red". The dicti
 
     dictionary_blue_red = {"blue": {}, "red": {} }
 
+Import image
+............
 This dictionary will be filled with arrays representing the images and containing the reflectance values of both the
 blue and the red band. For this, the function import_image() was created, which is stored under the module of the same
 name. This module has a second function, the import_cloud_reference() function. This will be used for the case that we
@@ -104,6 +111,8 @@ need a completely cloud free reference image to begin the analysis, like was exp
 .. automodule:: src.import_image
    :members:
 
+Timeseries
+..........
 Having the reflectance values of the series of images stored in a dictionary makes it possible to create a time series
 at pixel level that enables us to visually inspect the variations of the blue band reflectance values over the different
 dates. The next function returns a new time series dictionary with the dates and their corresponding values for a given
@@ -134,6 +143,8 @@ store the cloud masks as arrays with the value True if the pixel is cloud free a
 dictionary will store each one of the results of the three tests. This will help the task of adjusting the parameters of
 the functions containing the three tests. How this works is explained in the description of the the cloud mask module.
 
+Search reference
+................
 Like already mentioned, the reference values for the blue and for the red blue test should correspond to the most
 recent cloud free pixel before the date that is currently analysed. An specific function was written to find these
 values, which can be found under the search reference module.
@@ -145,9 +156,11 @@ The module multi_temporal_cloud_detection is the main analysis module, since her
 corresponds to the blue test, the red-blue test and the neighbourhood correlation test. The mtcd() function, which is
 also defined under this module, puts all these tests together and it is the function that determines if a given pixel is
 considered cloud or cloud free. In addition, we also find other two functions that the neighbourhood correlation test
-uses, the analysis_window() function that extracts the neighbourhood of a pixel into an array and the cor_test3()
+uses, the analysis_window() function that extracts the neighbourhood of a pixel into an array and the cor_array()
 function that calculates the correlation coefficient between two arrays.
 
+Multi temporal cloud detection
+..............................
 The mtcd() function has a parameter named test_version. If this parameter is set to 0, the output for a pixel will be
 True, False or -999, but if it is set to 1, the function will return three values for each pixel corresponding to each
 of the results of the three tests. A detailed explanation about this output can be read in the description of the mtcd()
@@ -156,6 +169,8 @@ function.
 .. automodule:: src.multi_temporal_cloud_detection
     :members: blue_test, red_blue_test, analysis_window, cor_array, neigh_cor, mtcd
 
+Cloud mask
+..........
 The cloud_mask() function which is stored in the cloud mask module runs the already known multi temporal cloud detection
 function over all pixels of the image. Again, we find the test version parameter in this function. If its value is 0, the function
 will update the dictionary_masked with the cloud masks. If the test version parameter is set to 1, not only the
@@ -167,6 +182,8 @@ the analysis of the algorithm is explained in the next paragraph.
 .. automodule:: src.cloud_mask
     :members:
 
+Array to raster
+...............
 The export of the cloud mask arrays into raster files is performed by the two functions in the module array to raster.
 The reason why we need two functions is because the first one creates a raster file of one band with the end result of
 the cloud masks and the second one creates a multi band raster file with three bands and each of the bands contains the
@@ -190,8 +207,8 @@ development of the algorithm.
 The adjustment of the parameters was done using clips of the image with the size 500 x 500 m to avoid long processing
 time. Three surface classes were identified in the whole image and for each class three different clips were created.
 Each clip represents a time series. Once the parameters were set, the algorithm was run in bigger images of 2500 x 2500
-m. To be able to evaluate the accuracy of this method, 50 random points of the cloud masks were created to visually ve-
-rify if the classification.
+m. To be able to evaluate the accuracy of this method, 50 random points of the cloud masks were created to visually
+verify the classification results.
 
 
 
