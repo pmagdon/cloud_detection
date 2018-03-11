@@ -210,7 +210,21 @@ Each clip represents a time series. Once the parameters were set, the algorithm 
 m. To be able to evaluate the accuracy of this method, 50 random points of the cloud masks were created to visually
 verify the classification results.
 
+Accuracy analysis
+-----------------
 
+To calculate the accuracy of the multi temporal cloud detection algorithm , some of the generated cloud masks are be
+used to run an accuracy analysis, which is be calculated for 3 different land cover classes: forest, city and field.
+For each one of these classes, the cloud masks for the 12 images of the same time series are analysed. For each image
+50 points are created using the tool "Create accuracy assessment points" offered by ArcMap. The sampling strategy is set
+to stratified random to be sure that we get representative points for cloud and cloud free areas. This condition causes
+that the tool sometimes creates more than 50 points, but never less.
+
+There are two types of images that we let out of the accuracy analysis: the first cloud free images and the images with
+only NA values since they are not affected by the algorithm. The method used in the accuracy analysis is visual assessment.
+The results are written in the attribute table and then compared with the output of the algorithm. A confusion matrix is
+generated with these values, from where the overall accuracy and the errors of commission and omission are calculated for
+each land cover class.
 
 
 

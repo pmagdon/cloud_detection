@@ -6,6 +6,8 @@ Contar que hay varios satélites con diferente tamaño de pixel y numero de band
 intervalo del espectro y que, en la imagen, después de la corrección atmosférica, tenemos el porcentaje de reflexión de
 la superficie terrestre en cada una de las bandas.
 
+Depending on the characteristics of the satellite
+
 Though, these images need a pre-processing step before the actual analysis begins. This is the case if there are clouds
 on them, which occurs quite regularly. Clouds not only cover the earth surface, wherein we are interested, but they
 also modify the reflectance values, which, when running the analysis, will lead to incorrect results.

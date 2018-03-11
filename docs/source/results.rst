@@ -274,9 +274,60 @@ the blue test will then continue taking the low values caused by the cloud shado
 
    Figure 17: Cloud masks for two images of the dates 2015-04-09 (left) and 2015-04-19 (right).
 
+Values of the parameters
+------------------------
+
+In the next table we can see the final values for each parameter.
+
++----------------+-------------+
+|   Parameters   |    Values   |
++================+=============+
+| Blue           |     3       |
++----------------+-------------+
+| Red blue       |     2       |
++----------------+-------------+
+| Window size    |    11       |
++----------------+-------------+
+| Correlation    |             |
+| coefficient    |     70      |
++----------------+-------------+
+Table 1: Selected parameters for the tests
 
 Accuracy analysis
 -----------------
 
-Once set the parameter values for the three tests, we are ready to run the algorithm for bigger images (2500 x 2500 m).
+Once set the parameter values for the three tests (see table 1 above), we are ready to run the algorithm on bigger images
+(2500 x 2500 m). The resulting clouds masks will be used for the accuracy analysis, like explained in the materials and
+methods section. The table 2 shows the overall accuracy and the commission and omission error together with the number of points
+used stratified by land cover class.
 
++------------+-------------------+-----------------+-------------------+------------------+
+|            | Overall accuracy  | Omission error  | Commission Error  | Number of points |
++============+===================+=================+===================+==================+
+| Forest     |        0.92       |       0.28      |       0.05        |        444       |
++------------+-------------------+-----------------+-------------------+------------------+
+| Field      |        0.89       |       0.11      |       0.14        |        461       |
++------------+-------------------+-----------------+-------------------+------------------+
+| City       |        0.86       |       0.10      |       0.13        |        475       |
++------------+-------------------+-----------------+-------------------+------------------+
+Table 2: Results of the confusion matrix for the three land cover classes.
+
+We observe that the forest class reaches the best overall accuracy despite the fact that it is also the class with the
+highest error of omission. This type of error is commonly found on the edges of the clouds. On top of it, in this time
+series a halo around some of the clouds was observed, within the levels of reflectance were very low and therefore, the
+algorithm didn't identified them as clouds. Furthermore, they provoked an erroneous cloud detection in the next image due
+to the big increase in reflectance, which increases the error of commission. Apart from that, the commission error in the
+forest class is not very high because of the lack of bright objects in the forest that could be wrongly classified as
+clods. Only some bright roads show this problem, which is mostly well solved by the neighbourhood correlation test.
+
+In the field class the above-explained situation happens more often due to agricultural changes. Since the red blue test,
+which should specially reclassify commission errors over agricultural fields, doesn't work as well as expected, we have
+a relatively high error of commission, which decreases the overall accuracy. The neighbourhood correlation test solves
+sometimes this problem, but often only at the borders of the field like showed in figure 17, due to the big changing area
+of the agricultural fields. The omission error occurs in this case, like in all land cover classes, because of the thin
+portions of the clouds, especially at their boundaries.
+
+The class city shows the lowest overall accuracy. In this case we find problematic bright objects like buildings which
+cause an error of commission. In most of the cases the neighbourhood correlation test is able to reclassify them, but
+sometimes the test doesn't succeed to do so, most of all at the begin of the time series where there are not many
+neighbourhoods to compare with.
