@@ -1,30 +1,70 @@
 Materials and methods
 =====================
 
-Cloud detection using time series
----------------------------------
-Since we don´t have any thermal band in our images, we can´t use this method to identify the clouds. We will use another
-characteristic of clouds, to wit, their high reflection value in the blue spectral band. This method is already
-implemented by ...
-To decide if a pixel of an
-image is a cloud or not, we will make use of a time series, comparing images taken at the same spot with different dates.
-We will compare the value of the pixel in the blue band with the value of the same pixel coordinate in a cloud free
-pixel from a previous image. This reference value will allow us to identify a high increase in the pixel reflectance value
-of the blue band of the current image, which could be due to the presence of a cloud.
-This criterion is expressed in the next formula:
-…
-Where pblue(D) and pblue(Dr) correspond to the pixel reflectance value of the current and of the reference date. A pixel
-is tagged as cloud only if the difference between these two values is above a certain threshold value. This threshold
-varies depending on the number of days between the two dates. D and Dr are expressed in days and if the images are
-close in time, the threshold value tends to be 0.03. In the case that the dates are separated by 30 days, the
-threshold parameter value will double. This allows change in time in the surface reflection.
+.. _begin:
+Data sets
+---------
 
-This comparison of reflectance values in the blue band assumes that the earth reflection stays stable, which is not
-always the case. Changes at the earth surface like agricultural interventions or natural variations can lead to a sudden
+The implemented algorithm is run on image series of 12 images from the year 2015 taken by the sensor RapidEye. The
+characteristics of this satellite are specified in table 1 and the specific wavelength for each spectral band can be
+found on table 2. The location of the  images is the `Hainich-Dün exploratory <http://www.biodiversity-exploratories.de/1/exploratories/>`_
+, which is situated in the west of Thuringia
+close to the border to Hessen.
+
+Hainich-Dün represents one of the three exploratories established in the context of the project biodiversity
+exploratories, which study large-scale and long-term functional biodiversity. The remote sensing sub-project provides
+area wide information on the land cover and the land use of these exploratories. To better understand the relationship
+between ecosystem functions and land use intensities time series analysis are carried out, which need a previous
+step of cloud masking.
+
++--------------------+--------------------+---------------------+------------------------+
+|Spatial resolution  |Spectral resolution | Temporal            | Radiometric resolution |
+|                    |                    | resolution          |                        |
++====================+====================+=====================+========================+
+|    5m              |   0.44 - 0.85      | Daily (off-nadir)/  |         12 bit         |
+|                    |                    | 5.5 days (at nadir) |                        |
++--------------------+--------------------+---------------------+------------------------+
+ Table 1: Resolutions of the satellite RapidEye.
+
+==========  =====
+Type        Wavelength
+==========  =====
+Blue        440-510
+Green       520-590
+Red         630-685
+Red Edge    690-730
+NIR         760-850
+==========  =====
+Table 2: Spectral bands of the satellite RapidEye.
+
+Multi temporal cloud detection method
+-------------------------------------
+
+`Data sets`_
+
+In this section the multi temporal cloud detection algorithm that we implement is described. This algorithm identifies
+clouds making use of their high reflection values in the blue spectral band. To decide if a pixel of an image is a cloud
+or not, we will make use of a time series, comparing images taken at the same spot with different dates. We will compare
+the value of the pixel in the blue band with the value of the same pixel coordinate in a cloud free pixel from a previous
+image. This reference value will allow us to identify a high increase in the pixel reflectance value of the blue band of
+the current image, which could be due to the presence of a cloud.
+This criterion is expressed in the next formula:::
+
+    pblue(D) - pblue(Dr) > blue_parameter * ( 1 + (D - Dr) / 30 )
+
+Where pblue(D) and pblue(Dr) correspond to the pixel reflectance value in the blue band of the current and of the
+reference date. A pixel is tagged as cloud only if the difference between these two values is above a certain threshold
+value: the blue parameter. The value of this parameter varies depending on the number of days between the two dates. D
+and Dr are expressed in days and if the images are close in time, the threshold value tends to be the same value as the
+blue parameter. In the case that the dates are separated by 30 days, the threshold parameter value will double. This
+allows change in time in the surface reflection.
+
+This comparison of reflectance values in the blue band assumes that the Earth reflection stays stable, which is not
+always the case. Changes at the Earth surface like agricultural interventions or natural variations can lead to a sudden
 increase of reflectance in the pixels of the affected areas. The first test on the blue band could classify these pixels
-as clouds, even if their high reflectance value is not due to the presence of a cloud.
-To compensate this limitation of the blue spectral band test, another two tests are run after the first one, whose aim
-is to assure that the detected sudden increase of the reflectance value is really due to a cloud.
+as clouds, even if their high reflectance value is not due to the presence of a cloud. To compensate this limitation of
+the blue spectral band test, another two tests are run after the first one, whose aim is to assure that the detected
+sudden increase of the reflectance value is really due to a cloud.
 
 The first of these two test compares the increase of reflection in the blue band with the one in the red band. If the
 increase of reflectance in the red band is much greater than the variation in the blue band, it is assumed that the
@@ -32,7 +72,12 @@ identified variation in the blue band is not due to a cloud, but has other cause
 cropped or ploughed in agriculture landscapes or that vegetation dries quickly in forest landscapes, which all cause a
 high reflection on the red spectral band. How much greater needs to be the variation in the red band than in the blue
 band to reclassify the pixel as cloud free is specified by the red-blue-threshold parameter. This second test can be
-expressed in the next formula:
+expressed in the next formula:::
+
+    pred(D) - pred(Dr) > red_parameter * ( pblue(D) - pblue(Dr) )
+
+Where pred(D) and pblue(Dr) correspond to the pixel reflectance value in the red band of the current and of the reference
+date.
 
 Another characteristic of clouds is that they don´t stay at the same place and with the same shape for a long time. The
 reflectance of the pixel neighbourhood of the current image is compared with the reflectance of the same neighbourhood
@@ -59,10 +104,6 @@ next image. This is because the reference pixel should correspond to the most re
 the current image. If a pixel is tagged as cloud free, the value of this pixel will be used for cloud free reference for
 the next image.
 
-Time series of 2015 of Hainich. Rapid Eye. 5 m.
-
-
-
 Documentation
 -------------
 This algorithm was implemented using Python 3.6 in the IDE Pycharm. The functions were organised in seven different
@@ -79,8 +120,8 @@ documentation. The parameters and the outputs of all functions were declared usi
 and a long description of what the function executes. This function documentation is presented hereunder along with
 an explanation of the main code and the followed steps to create the cloud masks from the raw images.
 
-The multi temporal cloud detection algorithm
---------------------------------------------
+Implementation of the algorithm
+-------------------------------
 
 First import
 ............
@@ -213,8 +254,10 @@ verify the classification results.
 Accuracy analysis
 -----------------
 
-To calculate the accuracy of the multi temporal cloud detection algorithm , some of the generated cloud masks are be
-used to run an accuracy analysis, which is be calculated for 3 different land cover classes: forest, city and field.
+To calculate the accuracy of the multi temporal cloud detection algorithm and determine the error rate and source, some
+of the generated cloud masks are be used to run a point based accuracy assessment, which is be calculated for 3 different
+land cover classes: forest, city and field.
+
 For each one of these classes, the cloud masks for the 12 images of the same time series are analysed. For each image
 50 points are created using the tool "Create accuracy assessment points" offered by ArcMap. The sampling strategy is set
 to stratified random to be sure that we get representative points for cloud and cloud free areas. This condition causes
