@@ -1,8 +1,12 @@
+.. _results:
+
+*******
 Results
-=======
-Like mentioned in the materials and methods section, for the adjustment of parameters we will use the created multiband
+*******
+
+Like mentioned in the :ref:`array-to-raster` section, for the adjustment of parameters we will use the created multiband
 raster files containing the information for each pixel about the result of the three tests. This raster files will be
-superposed to their corresponding image.
+superposed to their corresponding image to be able to analyse the results and adjust the parameters.
 
 Variations on blue parameter
 ----------------------------
@@ -10,11 +14,12 @@ The first parameter to adjust is the blue parameter, since the algorithm begins 
 cloudy pixels. Plausible values for this parameter are between 2 and 3. In the clip of date 2015-05-15 over a forest
 surface, we can observe a cloud:
 
+
 .. figure::  _static/figures/par1_fig1_forest1.PNG
    :width: 45%
    :align:   center
 
-   Figure 1: Cloud on clip of date 2015-05-15.
+   Figure 1: Cloud on clip of date 2015-05-15
 
 We run the algorithm over the time series of this forest clip two times: one with the blue parameter set to 2 and the
 second time set to 3. The values for the other parameters are set very high, so that they don't reclassify any pixel
@@ -25,24 +30,28 @@ something else. In the next figure we can observe two cloud masks overlapping. T
 set to 3 is represented in red. The green cloud mask is created with the blue parameter set to 2 and it covers the area
 of the red cloud mask and a bit more, but we can notice that this difference between both masks is small.
 
+.. _fig-blue:
+
 .. figure::  _static/figures/par1_fig2_forest1.PNG
    :width: 45%
    :align:   center
 
    Figure 2: Cloud mask over forest cover with blue parameter set to 3 (red) and to 2 (green).
-   Image with cloud of date 2015-05-15.
+   Image with cloud of date 2015-05-15
 
 On the other hand, we have the situation in the same time series of not cloudy pixels being flagged as cloud. The image
 of 2015-04-09 is cloud free. Still, the blue test identifies some pixels as cloud. Again, we show both cloud masks
 overlapping to be able to see the difference between them. The number of not cloudy pixels wrongly identified as cloud
 is much bigger with the blue parameter set to 2 (green cloud mask) than to 3 (red cloud mask).
 
+.. _figure-3:
+
 .. figure::  _static/figures/par1_fig3_forest1.PNG
    :width: 45%
    :align:   center
 
    Figure 3: Cloud mask over forest cover with blue parameter set to 3 (red) and to 2 (green).
-   Cloud free image of date 2015-04-15.
+   Cloud free image of date 2015-04-15
 
 Therefore, we conclude that while a lower value for the blue band parameter causes a slightly better cloud mask for
 cloudy pixels, it also leads to a bigger error of commission. This behaviour was observed not only on forest surface,
@@ -50,7 +59,7 @@ but also in urban and agriculture surfaces. The red blue test and, especially, t
 these wrongly classified pixels and reclassify them to cloud free in some cases, but not always, like we will see in the
 next sections. Taking this into account, we decide that the value 3 is convenient for the blue parameter.
 
-Like already explained in the section materials and methods, the value of the blue parameter variates depending on the
+Like already explained in the :ref:`multi-temporal-cloud-detection` section, the value of the blue parameter variates depending on the
 the time passed between the dates of the two pixels being compared. If the two pixels are far away in time, the parameter
 is increased. This temporal dependence of the blue parameter was also tested by letting it out in some runs of the algorithm.
 All results showed a better cloud mask for the case of date depending variation of the blue parameter.
@@ -62,10 +71,11 @@ reflection values of the two images. If this ratio is over 1.5 or under 0.5, the
 incremented by 1.5. This causes a more selective tagging of cloudy pixels by the blue test, i.e. only pixels where the
 refelctance highly variates are identified as clouds.
 
+.. _impact:
 
 Impact of clouds on nearby pixels
 ---------------------------------
-The reason for the error of commission in the image shown on figure 3 are the very low reflectance values in the blue band
+The reason for the error of commission in the image shown on :ref:`figure-3` are the very low reflectance values in the blue band
 of the previous image of the same time series with date 2015-03-23 in the area that is cloud free (see figure 4).
 This causes that the blue test identifies a high increase in the blue band reflectance values of this
 area. The low values in the image of 2015-03-23 are due to the presence of a cloud. The cloudy pixels in this image have
@@ -83,13 +93,14 @@ recognise that the shape of the cloud mask in figure 3 corresponds to the part o
    :width: 45%
    :align:   center
 
-   Figure 5: Image of date 2015-04-09. The reflectance values are between 9 and 12%.
+   Figure 5: Image of date 2015-04-09. The reflectance values are between 9 and 12%
 
+.. _variations-red:
 
 Variations on red-blue parameter
 --------------------------------
 The red-blue test should be able to reclassify wrongly cloud-tagged pixels by the blue test, which are really cloud free.
-This reclassification should occur especially in agricultural or forest landcovers where the cropping or the drying of the
+This reclassification should occur especially in agricultural or forest landcover where the cropping or the drying of the
 vegetation theoretically provokes a higher reflection on the red band than in the blue band. By running the algorithm
 with different values for the red blue parameter, we conclude that possible values for this test are between 1 and 2.
 With higher values, the test doesn't reclassify any pixels.
@@ -101,7 +112,7 @@ are due to agricultural interventions.
    :width: 80%
    :align:   center
 
-   Figure 6: Left image of date 2015-07-04, right image of date 2015-08-08.
+   Figure 6: Left image of date 2015-07-04, right image of date 2015-08-08
 
 With the blue parameter set to 2, the blue test wrongly identifies many pixels of the left field as clouds. The red blue
 test is able to amend this error by reclassifying a great part of this pixels with the red blue parameter set to 2. See
@@ -112,7 +123,7 @@ next figure:
    :align:   center
 
    Figure 7: Cloud mask for image of date 2015-08-08. Yellow pixels were first classified as clouds by the blue test, but
-   then the red-blue test reclassifies them as cloud free.
+   then the red-blue test reclassifies them as cloud free
 
 The disadvantage of the red blue test is that with the parameter set to 2 it not always succeeds in reclassifying the
 cloud free pixels like in the previous figure, but it always reclassifies the thin clouds. This can be observed in
@@ -123,7 +134,7 @@ figure 9, where yellow pixels located at the edges of the cloud represent reclas
    :width: 45%
    :align:   center
 
-   Figure 8: Image with cloud of date 2015-05-15.
+   Figure 8: Image with cloud of date 2015-05-15
 
 
 .. figure::  _static/figures/par2_fig4_field2_cm.PNG
@@ -133,7 +144,7 @@ figure 9, where yellow pixels located at the edges of the cloud represent reclas
    Figure 9: Cloud mask of date 2015-05-15. Red pixels are classified as cloudy by the blue test and not reclassified
    by the other two tests. Yellow pixels are reclassified by the red blue test, pink pixels are reclassified by the
    neighbourhood correlation test and white pixels are reclassified by both tests. The red pixels correspond to the final
-   cloud mask.
+   cloud mask
 
 If we reduce the parameter to 1.5 or even to 1, the reclassifying of erroneously classified pixels works better, but
 still not as good as expected, but a very great part of the pixels that are really clouds are also reclassified, which
@@ -155,7 +166,7 @@ clouds by the blue test.
    :width: 45%
    :align:   center
 
-   Figure 10: Image of date 2015-04-19.
+   Figure 10: Image of date 2015-04-19
 
 We run the algorithm using two different values for the correlation coefficient parameter: 85% and 55%. All the pixels
 coloured in red or pink are classified as cloud by the blue test, but the pink ones are again reclassified as cloud free
@@ -169,7 +180,7 @@ previous neighbourhoods, which both have low values of reflectance.
    :align:   center
 
    Figure 11: Cloud masks generated with a correlation coefficient parameter of 85% (left) and 55% (right). Pink pixels
-   are reclassified as cloud free by the neighbourhood correlation test.
+   are reclassified as cloud free by the neighbourhood correlation test
 
 Like in the red blue test, we have the inconvenient that a low parameter value that achieves a very good reclassification
 of pixels that are cloud free, will also reclassify some cloudy pixels of thin clouds. This behaviour can be noticed in
@@ -182,13 +193,13 @@ reclassified by this tests, which red blue parameter was set to 2 in this run.
    :width: 45%
    :align:   center
 
-   Figure 12: Image of date 2015-05-15 with cloud.
+   Figure 12: Image of date 2015-05-15 with cloud
 
 .. figure::  _static/figures/cc_fig4_city.PNG
    :width: 80%
    :align:   center
 
-   Figure 13: Cloud masks generated with a correlation coefficient parameter of 85% (left) and 55% (right).
+   Figure 13: Cloud masks generated with a correlation coefficient parameter of 85% (left) and 55% (right)
 
 Again, we have to find a compromise between a good reclassification of cloud free pixels and a not very high amount of
 cloudy pixels being reclassified as cloud free. After running the algorithm with different values for this parameter in
@@ -210,7 +221,7 @@ surfaces like a road. Some bright pixels of this image are classified by the blu
    :width: 45%
    :align:   center
 
-   Figure 14: Image of date 2015-04-19 with high reflectance surfaces.
+   Figure 14: Image of date 2015-04-19 with high reflectance surfaces
 
 If we compare this two cloud masks it is difficult to say which one has a higher amount of reclassified pixels by the
 neighbourhood correlation test (pink pixels). What one can appreciate is that with a higher window size (11), the cloud
@@ -220,7 +231,7 @@ mask is more homogeneous.
    :width: 80%
    :align:   center
 
-   Figure 15: Cloud mask generated with a window size parameter of 11 (left) and 5 (right).
+   Figure 15: Cloud mask generated with a window size parameter of 11 (left) and 5 (right)
 
 In the next figure we can observe the effect of different window sizes in the unwanted reclassification of pixels that
 are clouds to cloud free pixels. In this case it is easy to notice that the left image will deliver a better cloud mask
@@ -230,11 +241,13 @@ since less cloudy pixels will be reclassified.
    :width: 80%
    :align:   center
 
-   Figure 16: Cloud mask generated with a window size parameter of 11 (left) and 5 (right).
+   Figure 16: Cloud mask generated with a window size parameter of 11 (left) and 5 (right)
 
 We compared different window sizes in several time series and they all showed a similar behaviour as the example shown.
 A bigger window size than 11 does not necessarily improve the cloud mask accuracy, but it always increases the running time
 of the algorithm. Taking this into account, the value 11 is selected for the window size parameter.
+
+.. _reference-pixels:
 
 Variations on reference pixels
 ------------------------------
@@ -268,11 +281,13 @@ limiting the comparision of neighbourhoods to cloud free pixels would cause that
 cloud free by the neighbourhood correlation test and therefore, they will remain masked as cloud in the next image and
 the blue test will then continue taking the low values caused by the cloud shadow for comparision in this area.
 
+.. _figure-17:
+
 .. figure::  _static/figures/refim_fig1_forest3.PNG
    :width: 80%
    :align:   center
 
-   Figure 17: Cloud masks for two images of the dates 2015-04-09 (left) and 2015-04-19 (right).
+   Figure 17: Cloud masks for two images of the dates 2015-04-09 (left) and 2015-04-19 (right)
 
 Values of the parameters
 ------------------------
@@ -291,14 +306,17 @@ In the next table we can see the final values for each parameter.
 | Correlation    |             |
 | coefficient    |     70      |
 +----------------+-------------+
-Table 1: Selected parameters for the tests
+
+Table 3: Selected parameters for the tests
+
+.. _confusion-matrix:
 
 Accuracy analysis
 -----------------
 
-Once set the parameter values for the three tests (see table 1 above), we are ready to run the algorithm on bigger images
+Once set the parameter values for the three tests (see table 3), we are ready to run the algorithm on bigger images
 (2500 x 2500 m). The resulting clouds masks will be used for the accuracy analysis, like explained in the materials and
-methods section. The table 2 shows the overall accuracy and the commission and omission error together with the number of points
+methods section. The table 4 shows the overall accuracy and the commission and omission error together with the number of points
 used stratified by land cover class.
 
 +------------+-------------------+-----------------+-------------------+------------------+
@@ -310,7 +328,8 @@ used stratified by land cover class.
 +------------+-------------------+-----------------+-------------------+------------------+
 | City       |        0.86       |       0.10      |       0.13        |        475       |
 +------------+-------------------+-----------------+-------------------+------------------+
-Table 2: Results of the confusion matrix for the three land cover classes.
+
+Table 4: Results of the confusion matrix for the three land cover classes
 
 We observe that the forest class reaches the best overall accuracy despite the fact that it is also the class with the
 highest error of omission. This type of error is commonly found on the edges of the clouds. On top of it, in this time
@@ -323,7 +342,7 @@ clods. Only some bright roads show this problem, which is mostly well solved by 
 In the field class the above-explained situation happens more often due to agricultural changes. Since the red blue test,
 which should specially reclassify commission errors over agricultural fields, doesn't work as well as expected, we have
 a relatively high error of commission, which decreases the overall accuracy. The neighbourhood correlation test solves
-sometimes this problem, but often only at the borders of the field like showed in figure 17, due to the big changing area
+sometimes this problem, but often only at the borders of the field like showed in :ref:`figure-17`, due to the big changing area
 of the agricultural fields. The omission error occurs in this case, like in all land cover classes, because of the thin
 portions of the clouds, especially at their boundaries.
 

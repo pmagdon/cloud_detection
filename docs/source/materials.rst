@@ -1,21 +1,24 @@
+*********************
 Materials and methods
-=====================
+*********************
+.. _Data-sets:
 
-.. _begin:
 Data sets
----------
+=========
 
-The implemented algorithm is run on image series of 12 images from the year 2015 taken by the sensor RapidEye. The
-characteristics of this satellite are specified in table 1 and the specific wavelength for each spectral band can be
-found on table 2. The location of the  images is the `Hainich-Dün exploratory <http://www.biodiversity-exploratories.de/1/exploratories/>`_
-, which is situated in the west of Thuringia
+The data set used in developing the multi temporal cloud detection algorithm are satellite images taken by the sensor RapidEye.
+The characteristics of this satellite are specified on  table 1 and the wavelength for each spectral band
+can be found on table 2. Several time series were created for each land cover class and each of these time series contains
+12 images from the year 2015. The spectral reflectance pixel values from this images used for the tests are expressed
+in percentage. The location of the  images is the
+`Hainich-Dün exploratory <http://www.biodiversity-exploratories.de/1/exploratories/>`_, which is situated in the west of Thuringia
 close to the border to Hessen.
 
 Hainich-Dün represents one of the three exploratories established in the context of the project biodiversity
-exploratories, which study large-scale and long-term functional biodiversity. The remote sensing sub-project provides
-area wide information on the land cover and the land use of these exploratories. To better understand the relationship
-between ecosystem functions and land use intensities time series analysis are carried out, which need a previous
-step of cloud masking.
+exploratories, which study large-scale and long-term functional biodiversity. The `remote sensing sub-project
+<http://www.biodiversity-exploratories.de/1/infrastructure/instrumentation-remote-sensing/>`_ provides area wide information
+on the land cover and the land use of these exploratories. To better understand the relationship between ecosystem functions
+and land use intensities time series analysis are carried out, which need a previous step of cloud masking.
 
 +--------------------+--------------------+---------------------+------------------------+
 |Spatial resolution  |Spectral resolution | Temporal            | Radiometric resolution |
@@ -24,6 +27,7 @@ step of cloud masking.
 |    5m              |   0.44 - 0.85      | Daily (off-nadir)/  |         12 bit         |
 |                    |                    | 5.5 days (at nadir) |                        |
 +--------------------+--------------------+---------------------+------------------------+
+
  Table 1: Resolutions of the satellite RapidEye.
 
 ==========  =====
@@ -35,29 +39,31 @@ Red         630-685
 Red Edge    690-730
 NIR         760-850
 ==========  =====
+
 Table 2: Spectral bands of the satellite RapidEye.
 
-Multi temporal cloud detection method
--------------------------------------
+.. _multi-temporal-cloud-detection:
 
-`Data sets`_
+Multi temporal cloud detection method
+=====================================
 
 In this section the multi temporal cloud detection algorithm that we implement is described. This algorithm identifies
 clouds making use of their high reflection values in the blue spectral band. To decide if a pixel of an image is a cloud
-or not, we will make use of a time series, comparing images taken at the same spot with different dates. We will compare
-the value of the pixel in the blue band with the value of the same pixel coordinate in a cloud free pixel from a previous
-image. This reference value will allow us to identify a high increase in the pixel reflectance value of the blue band of
-the current image, which could be due to the presence of a cloud.
+or not, we will make use of a time series, comparing images taken at the same spot with different dates.
+
+We will compare the value of the pixel in the blue band with the value of the same pixel coordinate in a cloud free pixel
+from a previous image. This reference value will allow us to identify a high increase in the pixel reflectance value of
+the blue band of the current image, which could be due to the presence of a cloud.
 This criterion is expressed in the next formula:::
 
     pblue(D) - pblue(Dr) > blue_parameter * ( 1 + (D - Dr) / 30 )
 
 Where pblue(D) and pblue(Dr) correspond to the pixel reflectance value in the blue band of the current and of the
 reference date. A pixel is tagged as cloud only if the difference between these two values is above a certain threshold
-value: the blue parameter. The value of this parameter varies depending on the number of days between the two dates. D
-and Dr are expressed in days and if the images are close in time, the threshold value tends to be the same value as the
-blue parameter. In the case that the dates are separated by 30 days, the threshold parameter value will double. This
-allows change in time in the surface reflection.
+value: the blue parameter (See `Blue test`_). The value of this parameter varies depending on the
+number of days between the two dates. D and Dr are expressed in days and if the images are close in time, the threshold
+value tends to be the same value as the blue parameter. In the case that the dates are separated by 30 days, the threshold
+parameter value will double. This allows change in time in the surface reflection.
 
 This comparison of reflectance values in the blue band assumes that the Earth reflection stays stable, which is not
 always the case. Changes at the Earth surface like agricultural interventions or natural variations can lead to a sudden
@@ -66,8 +72,8 @@ as clouds, even if their high reflectance value is not due to the presence of a 
 the blue spectral band test, another two tests are run after the first one, whose aim is to assure that the detected
 sudden increase of the reflectance value is really due to a cloud.
 
-The first of these two test compares the increase of reflection in the blue band with the one in the red band. If the
-increase of reflectance in the red band is much greater than the variation in the blue band, it is assumed that the
+The first of these two test compares the increase of reflection in the blue band with the one in the red band (See `Red blue test`_).
+If the increase of reflectance in the red band is much greater than the variation in the blue band, it is assumed that the
 identified variation in the blue band is not due to a cloud, but has other causes. This causes could be that a field is
 cropped or ploughed in agriculture landscapes or that vegetation dries quickly in forest landscapes, which all cause a
 high reflection on the red spectral band. How much greater needs to be the variation in the red band than in the blue
@@ -81,10 +87,11 @@ date.
 
 Another characteristic of clouds is that they don´t stay at the same place and with the same shape for a long time. The
 reflectance of the pixel neighbourhood of the current image is compared with the reflectance of the same neighbourhood
-in one to ten images acquired before the current date. If the neighbourhood's reflectances are similar, i.e. if their
-correlation coefficient is high, can only be due to the absence of a cloud. The reason for using the pixel reflections
-from the last ten images as reference and not from the last ten cloud free pixels is to prevent that an error of
-commission remains through the images of the time series. This will be explained with more detail in the results part.
+in one to ten images acquired before the current date (See `Neighbourhood correlation test`_). If the neighbourhood's
+reflectances are similar, i.e. if their correlation coefficient is high, can only be due to the absence of a cloud.
+The reason for using the pixel reflections from the last ten images as reference and not from the last ten cloud free
+pixels is to prevent that an error of commission remains through the images of the time series. This will be discussed
+with more detail in the sub-section :ref:`reference-pixels`.
 
 These two tests are run only on the pixels that are tagged as clouds by the first test using the blue band reflectance
 increase criterion. They either assure the positive result and the pixel stays flagged as a cloud or they reclassify the
@@ -95,8 +102,8 @@ The pixel with which we are comparing the current pixel value should be cloud fr
 of a cloud free reflectance value of the blue band in this specific position of the earth surface. This obliges us to
 begin the analysis with a complete cloud free image, which serves as a reference for the pixels of the first analysed
 image. This requirement may be contradictory, since the aim of the algorithm is to be able to identify the clouds, but
-it needs a cloud free image to start with the analysis. More about this issue can be read in the discussion part of this
-project, where a solution to this problem is proposed.
+it needs a cloud free image to start with the analysis. More about this issue can be read in the :ref:`dicussion` section
+of this project, where a solution to this problem is proposed.
 
 A main idea of the time series analysis is that the images are analysed one at a time and at pixel-level. Only when all
 pixels of an image are tagged as cloud or cloud free, and this information is saved, the analysis will follow with the
@@ -105,26 +112,25 @@ the current image. If a pixel is tagged as cloud free, the value of this pixel w
 the next image.
 
 Documentation
--------------
+=============
 This algorithm was implemented using Python 3.6 in the IDE Pycharm. The functions were organised in seven different
-modules, each one of them storing one to more functions. For the documentation of this project Sphinx was used. Sphinx
-is a documentation generator written in Python that uses the markup language reStructuredText and its parsing and
-translating suite Docutils to convert the reStructuredText files into HTML websites and other output formats like PDF.
-Source: https://github.com/sphinx-doc/sphinx/blob/master/README.rst
+modules, each one of them storing one to more functions. For the documentation of this project `Sphinx  <http://www.sphinx-doc.org/en/master/>`_
+was used. Sphinx is a documentation generator written in Python that uses the markup language reStructuredText and its parsing and
+translating suite Docutils to convert the reStructuredText files into HTML websites and other output formats like PDF
+(See more in `Sphinx-README <https://github.com/sphinx-doc/sphinx/blob/master/README.rst>`_). The plaintext markup syntax
+`reStructuredText <http://docutils.sourceforge.net/rst.html>`_ was chosen among other markup languages for its ease to
+read and because it is the default markup language in the Python integrated tools of the IDE Pycharm.
 
-The plaintext markup syntax reStructuredText was chosen among other markup languages for its ease to read and because
-it is the default markup language in the Python integrated tools of the IDE Pycharm.
-Source: http://docutils.sourceforge.net/rst.html
-The documentation of the created functions of this cloud detection algorithm was created with help of in-line
-documentation. The parameters and the outputs of all functions were declared using docstrings, together with a short
-and a long description of what the function executes. This function documentation is presented hereunder along with
-an explanation of the main code and the followed steps to create the cloud masks from the raw images.
+The documentation of the created functions of this cloud detection algorithm was created with help of in-line documentation.
+The parameters and the outputs of all functions were declared using docstrings, together with a short and a long description
+of what the function executes. This function documentation is presented hereunder along with an explanation of the main
+code and the followed steps to create the cloud masks from the raw images.
 
 Implementation of the algorithm
--------------------------------
+===============================
 
 First import
-............
+------------
 The very first step is to import the images. For this, we indicate in which path are the images that we want to analyse.
 The names of the files found in this path are read and written into a list together with its path.
 The first module is called first_import and the only function in this module of the same name as the module just writes
@@ -133,34 +139,36 @@ the file names of the image into a list.
 .. automodule:: src.first_import
     :members:
 
-We continue with the creation of an empty nested dictionary. Dictionaries are mapping type object which are able to store
-values. This values can be indexed by keys. Source: https://docs.python.org/2/library/stdtypes.html#typesmapping
-There is also possible to create one or more dictionaries inside of a dictionary, this are known as nested dictionaries.
+We continue with the creation of an empty nested dictionary. `Dictionaries <https://docs.python.org/2/library/stdtypes.html#typesmapping>`_
+are mapping type object which are able to store values. This values can be indexed by keys. There is also possible to
+create one or more dictionaries inside of a dictionary, this are known as nested dictionaries.
+
 The new created dictionary is called dictionary_blue_red and inside it we find other two dictionaries: the first one
 can be accessed by the key "blue" and the second one by the key "red". The dictionary will have then the next structure:
 ::
 
     dictionary_blue_red = {"blue": {}, "red": {} }
 
+.. _import-image:
+
 Import image
-............
+------------
 This dictionary will be filled with arrays representing the images and containing the reflectance values of both the
-blue and the red band. For this, the function import_image() was created, which is stored under the module of the same
-name. This module has a second function, the import_cloud_reference() function. This will be used for the case that we
-need a completely cloud free reference image to begin the analysis, like was explained above these lines.
+blue and the red band. For this, the function "import_image" was created, which is stored under the module of the same
+name. This module has a second function, the "import_cloud_reference" function. This will be used for importing the first
+cloud free reference image we need to begin the analysis.
 
 .. automodule:: src.import_image
    :members:
 
 Timeseries
-..........
+----------
 Having the reflectance values of the series of images stored in a dictionary makes it possible to create a time series
 at pixel level that enables us to visually inspect the variations of the blue band reflectance values over the different
 dates. The next function returns a new time series dictionary with the dates and their corresponding values for a given
-pixel. The time series dictionary is converted into a data frame with help of the pandas library, a library providing
-data structures and data analysis tools for Python. Source: https://pandas.pydata.org/
-The data frame structure is more convenient for the creation of a plot. An example of such a plot will be shown in the
-results part.
+pixel. The time series dictionary is converted into a data frame with help of the `Pandas library <https://pandas.pydata.org/>`_,
+a library providing data structures and data analysis tools for Python. The data frame structure is more convenient for
+the creation of a plot. An example of such a plot will be shown in the results part.
 
 .. automodule:: src.timeseries
     :members:
@@ -177,58 +185,95 @@ an image is an array with the size of the image and with one value for each pixe
     * 1 for the pixels that are considered cloud free
     * 0 for pixels tagged as cloud
     * -999 for the case that no data was found at this pixel of the image. Like explained in the description of the
-      import_image() function, pixels of the image with value 0 are imported as no data (np.nan).
+      "`import-image`_" function, pixels of the image with value 0 are imported as no data (np.nan).
 
 The reason to create two dictionaries is that each onr of them will store a different output. The dictionary_masked will
 store the cloud masks as arrays with the value True if the pixel is cloud free and False if it is cloud  and the second
-dictionary will store each one of the results of the three tests. This will help the task of adjusting the parameters of
-the functions containing the three tests. How this works is explained in the description of the the cloud mask module.
+dictionary will store each one of the results of the three tests. This will help the adjustment of the function parameters
+for the three tests. How this works is explained in the `Array to raster`_ section.
 
 Search reference
-................
+----------------
 Like already mentioned, the reference values for the blue and for the red blue test should correspond to the most
-recent cloud free pixel before the date that is currently analysed. An specific function was written to find these
-values, which can be found under the search reference module.
+recent cloud free pixel before the date that is currently analysed. A specific function was written to find these
+values, which can be found under the "search_reference" module.
 
 .. automodule:: src.search_reference
     :members:
 
-The module multi_temporal_cloud_detection is the main analysis module, since here is where we find the functions that
-corresponds to the blue test, the red-blue test and the neighbourhood correlation test. The mtcd() function, which is
-also defined under this module, puts all these tests together and it is the function that determines if a given pixel is
-considered cloud or cloud free. In addition, we also find other two functions that the neighbourhood correlation test
-uses, the analysis_window() function that extracts the neighbourhood of a pixel into an array and the cor_array()
+The module "multi_temporal_cloud_detection" is the main analysis module, since here is where we find the functions that
+corresponds to the `Blue test`_, the `Red blue test`_ and the `Neighbourhood correlation test`_. The `Multi temporal cloud detection function`_,
+which is also defined under this module, puts all these tests together and it is the function that determines if a given pixel is
+considered cloud or cloud free. In addition, we also find other two functions that the `Neighbourhood correlation test`_
+uses, the `Analysis window`_ function that extracts the neighbourhood of a pixel into an array and the `Correlation array`_
 function that calculates the correlation coefficient between two arrays.
 
-Multi temporal cloud detection
-..............................
-The mtcd() function has a parameter named test_version. If this parameter is set to 0, the output for a pixel will be
-True, False or -999, but if it is set to 1, the function will return three values for each pixel corresponding to each
-of the results of the three tests. A detailed explanation about this output can be read in the description of the mtcd()
-function.
+.. _multi-temp:
 
+Multi temporal cloud detection
+------------------------------
+The `Multi temporal cloud detection function`_ has a parameter named "test_version". If this parameter is set to 0, the output for a pixel will be
+True, False or -999, but if it is set to 1, the function will return three values for each pixel corresponding to each
+of the results of the three tests. A detailed explanation about this output can be read in the description of the
+`Multi temporal cloud detection function`_.
+
+.. _blue-test:
+
+Blue test
+.........
 .. automodule:: src.multi_temporal_cloud_detection
-    :members: blue_test, red_blue_test, analysis_window, cor_array, neigh_cor, mtcd
+    :members: blue_test
+
+.. _red-blue:
+Red blue test
+.............
+.. automodule:: src.multi_temporal_cloud_detection
+    :members: red_blue_test
+
+Analysis window
+...............
+.. automodule:: src.multi_temporal_cloud_detection
+    :members: analysis_window
+
+Correlation array
+.................
+.. automodule:: src.multi_temporal_cloud_detection
+    :members: cor_array
+
+.. _neigh-cor:
+
+Neighbourhood correlation test
+..............................
+.. automodule:: src.multi_temporal_cloud_detection
+    :members: neigh_cor
+
+Multi temporal cloud detection function
+.......................................
+.. automodule:: src.multi_temporal_cloud_detection
+    :members: mtcd
+
 
 Cloud mask
 ..........
-The cloud_mask() function which is stored in the cloud mask module runs the already known multi temporal cloud detection
-function over all pixels of the image. Again, we find the test version parameter in this function. If its value is 0, the function
-will update the dictionary_masked with the cloud masks. If the test version parameter is set to 1, not only the
-dictionary_masked is updated, but also the dictionary_masked_test. Three arrays are stored under each date/key of this
-dictionary, each one of the arrays corresponding to the result of each test. The goal of creating this dictionary is to
-export the contained arrays into multi band raster files with three bands. How these multi band raster files help improve
-the analysis of the algorithm is explained in the next paragraph.
+The "cloud_mask" function runs the already known `Multi temporal cloud detection function`_ over all pixels of the image.
+Again, we find the "test_version" parameter in this function. If its value is 0, the function will update the "dictionary_masked"
+with the cloud masks. If the "test_version" parameter is set to 1, not only the "dictionary_masked" is updated, but also
+the "dictionary_masked_test". Three arrays are stored under each date/key of this dictionary, each one of the arrays
+corresponding to the result of each test. The goal of creating this dictionary is to export the contained arrays into
+multi band raster files with three bands. How these multi band raster files help improve the analysis of the algorithm
+is explained in the section `Array to raster`_.
 
 .. automodule:: src.cloud_mask
     :members:
+
+.. _array-to-raster:
 
 Array to raster
 ...............
 The export of the cloud mask arrays into raster files is performed by the two functions in the module array to raster.
 The reason why we need two functions is because the first one creates a raster file of one band with the end result of
 the cloud masks and the second one creates a multi band raster file with three bands and each of the bands contains the
-results for each of the three tests run in the multi temporal cloud detection function.
+results for each of the three tests run in the `Multi temporal cloud detection function`_.
 
 The one band raster files can be opened in a geospatial program, like ArcMap, to display the results. Placing the image under
 the cloud mask and setting the pixel value for the pixels tagged as cloud free to transparent in the symbology options
@@ -247,27 +292,26 @@ development of the algorithm.
 
 The adjustment of the parameters was done using clips of the image with the size 500 x 500 m to avoid long processing
 time. Three surface classes were identified in the whole image and for each class three different clips were created.
-Each clip represents a time series. Once the parameters were set, the algorithm was run in bigger images of 2500 x 2500
-m. To be able to evaluate the accuracy of this method, 50 random points of the cloud masks were created to visually
-verify the classification results.
+Each clip represents a time series. Once the parameters were set, the algorithm was run in bigger images of 2500 x 2500.
 
 Accuracy analysis
------------------
+=================
 
 To calculate the accuracy of the multi temporal cloud detection algorithm and determine the error rate and source, some
 of the generated cloud masks are be used to run a point based accuracy assessment, which is be calculated for 3 different
 land cover classes: forest, city and field.
 
-For each one of these classes, the cloud masks for the 12 images of the same time series are analysed. For each image
-50 points are created using the tool "Create accuracy assessment points" offered by ArcMap. The sampling strategy is set
-to stratified random to be sure that we get representative points for cloud and cloud free areas. This condition causes
-that the tool sometimes creates more than 50 points, but never less.
+For each one of these classes, the cloud masks for the 12 images of the size 2500 x 2500 from the same time series are analysed.
+For each image 50 points are created using the tool `Create accuracy assessment points
+<https://desktop.arcgis.com/en/arcmap/latest/tools/spatial-analyst-toolbox/create-accuracy-assessment-points.htm>`_
+offered by ArcMap. The sampling strategy is set to stratified random to be sure that we get representative points for
+cloud and cloud free areas. This condition causes that the tool sometimes creates more than 50 points, but never less.
 
-There are two types of images that we let out of the accuracy analysis: the first cloud free images and the images with
-only NA values since they are not affected by the algorithm. The method used in the accuracy analysis is visual assessment.
-The results are written in the attribute table and then compared with the output of the algorithm. A confusion matrix is
-generated with these values, from where the overall accuracy and the errors of commission and omission are calculated for
-each land cover class.
+There are two types of images that we let out of the accuracy analysis: the first cloud free image of each time series
+and the images with only NA values since they are ignored by the algorithm. The method used in the accuracy analysis is
+visual assessment. The results are written in the attribute table and then compared with the output of the algorithm.
+A :ref:`confusion-matrix` is generated with these values, from where the overall accuracy and the errors of commission and
+omission are calculated for each land cover class.
 
 
 

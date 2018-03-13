@@ -19,6 +19,7 @@ def import_image(file, blue_band, red_band, dic):
     :param object dic: The image values dictionary.
     :return: Print the message "Dictionary updated".
     """
+
     im = rasterio.open(file)
 
     im_blue_band = im.read(blue_band)
