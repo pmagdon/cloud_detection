@@ -52,5 +52,27 @@ def search_references_list(dic_values, dic_mask, row, col, band_name):
 
 ###################################################
 
+import matplotlib.pyplot as plt
+
+x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+y = [9.5, 6.3, 10.9, 12.3, 12.9, 8.6, 0, 42.3, 3.3, 6.2, 0, 9.7]
+labels = ['03-19', '03-23', '04-09', '04-15', "04-19", "04-24", '05-10','05-15',
+          '07-04', '08-08', '08-23', '10-02']
 
 
+
+fig = plt.figure()
+
+ax = fig.add_subplot(111)
+
+plt.plot(x, y,  marker='o', )
+# You can specify a rotation for the tick labels in degrees or with keywords.
+plt.xticks(x, labels, rotation='vertical')
+plt.tick_params(labelsize=16)
+
+# Tweak spacing to prevent clipping of tick-labels
+plt.subplots_adjust(bottom=0.15)
+
+plt.ylabel('reflectance values [%]', fontsize = 20)
+
+ax.annotate(" ", xy=(8, 42.3), xytext=(9, 40), arrowprops=dict(facecolor='black', shrink=0.01))

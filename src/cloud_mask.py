@@ -7,10 +7,10 @@ def cloud_mask(date, blue_par, red_blue_par, window_size, cor_coeff, dic_values,
     """
     Create a cloud mask from an image and put it in the corresponding dictionary.
 
-    Get the number of rows and of columns from an image, run the multi temporal cloud detection function for all the
+    Get the number of rows and of columns from an image, run the multi-temporal cloud detection function for all the
     pixels of the image of a given date and store the results into a list. Reshape this list into an array of the shape
     of the image and update the corresponding cloud mask dictionary with this array for the current date. If the test
-    version is activated, the return of the multi temporal cloud detection function will be three values and they will
+    version is activated, the return of the multi-temporal cloud detection function will be three values and they will
     be stored in three lists, each one of them corresponding to each test. Reshape each of the three lists into three
     arrays of the shape of the image and use them to create a 3D array. Update the test masked dictionary with this
     3D array and also update the standard masked dictionary with the standard cloud mask.

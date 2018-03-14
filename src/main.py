@@ -11,12 +11,12 @@ from src.array_to_raster import array2raster, array2raster_3b
 image_set = []
 # empty list to be filled up with the file paths of the images
 
-files = os.listdir("C:/Users/anpla/data/2500m/forest/forest3")
+files = os.listdir("C:/Users/anpla/data/500m/forest1")
 # reads the names of the files in the given directory into a list
 for file in files:
     # for loop to import all the file paths of the files in the folder data into the list image_set.
     # Output: list updated
-    first_import("C:/Users/anpla/data/2500m/forest/forest3/" + file, image_set)
+    first_import("C:/Users/anpla/data/500m/forest1/" + file, image_set)
 
 dictionary_blue_red = {"blue": {}, "red": {}}
 # this empty nested dictionary will be updated with the arrays of numbers which correspond to the pixel reflectance
@@ -26,10 +26,10 @@ for images in image_set:
     # reads all the image files in the list
     import_image(images, 1, 3, dictionary_blue_red)
 
-#timeseries = extract_timeseries(dictionary_blue_red, "blue", 56, 85)
+timeseries = extract_timeseries(dictionary_blue_red, "blue", 56, 85)
 
-#df = pd.DataFrame(timeseries)  # creates a data frame
-#df.plot(x="dates", y="values")  # plot time series
+df = pd.DataFrame(timeseries)  # creates a data frame
+df.plot(x="dates", y="values", rot = 1)  # plot time series
 
 dictionary_masked = {}
 dictionary_masked_test = {}

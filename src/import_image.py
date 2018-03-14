@@ -7,9 +7,9 @@ def import_image(file, blue_band, red_band, dic):
     Import the blue and red band pixel values of an image into a dictionary.
 
     Open the image file, read the values of the selected bands and of the acquisition date and update a nested
-    dictionary. Each of the two nested dictionaries correspond to one band: blue and red.
+    dictionary. Each of the two nested dictionaries corresponds to one band: blue and red.
     The keys of the nested dictionaries will be the dates corresponding to the images and the reflectance values in
-    form of array will be the values.
+    the form of an array will be the values.
     If a value is 0, is replaced with np.nan.
 
 
@@ -37,9 +37,9 @@ def import_image(file, blue_band, red_band, dic):
 
 def import_cloudfree_reference(file, dic):
     """
-    Import the first image of the series which should be a cloud free reference.
+    Import the first image of the series which should be a cloud-free reference.
 
-    Open the first cloud free image which serves as a reference. Open the file and read a band. Read the data of
+    Open the first cloud-free image which serves as a reference. Open the file and read a band. Read the date of
     acquisition. Create an array full of "True" values with the shape of the image array. Update the masked dictionary
     with the created array and its correspondent date of acquisition.
 
