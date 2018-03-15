@@ -91,7 +91,7 @@ of the previous image in the time-series with date 2015-03-23 in the area that i
 This causes that the blue test identifies a high reflectance increase in this area. The low values in the previous image
 are due to the presence of a cloud. The cloudy pixels have high reflectance values, but the rest of the pixel values are
 lower than usual for this surface. We can
-recognise that the shape of the cloud mask in figure 3 corresponds to the part of the image in figure 4 that is cloud free.
+recognise that the shape of the cloud mask in figure 3 corresponds to the part of the image in figure 4 that is cloud-free.
 
 .. figure::  _static/figures/imp_fig4_forest1.PNG
    :width: 45%
@@ -134,10 +134,10 @@ next figure:
    :align:   center
 
    Figure 7: Cloud mask for image of date 2015-08-08. Yellow pixels were first classified as clouds by the blue test, but
-   then the red-blue test reclassifies them as cloud free
+   then the red-blue test reclassifies them as cloud-free
 
 The disadvantage of the red-blue test is that with the parameter set to 2, it not always succeeds in reclassifying the
-cloud free pixels like in the previous figure, but it does always reclassifies the thin clouds. This can be observed in
+cloud-free pixels like in the previous figure, but it does always reclassifies the thin clouds. This can be observed in
 figure 9, where yellow pixels located at the edges of the cloud represent reclassified pixels by the red-blue test.
 
 
@@ -165,7 +165,6 @@ next section.
 
 Variations on correlation coefficient parameter
 -----------------------------------------------
-
 The neighbourhood correlation test reclassifies a pixel if its neighbourhood highly correlates with the same
 neighbourhoods of any of the ten previous images. The correlation coefficient parameter indicates the correlation value above which
 a pixel will be reclassified. Therefore, if the parameter is high, fewer pixels will be reclassified than if the parameter
@@ -193,7 +192,7 @@ previous neighbourhoods, both having low values of reflectance.
    are reclassified as cloud-free by the neighbourhood correlation test
 
 Like in the red-blue test, we have the inconvenient that a low parameter value that achieves a very good reclassification
-of pixels that are cloud free, will also reclassify some cloudy pixels of thin clouds. This behaviour can be noticed in
+of pixels that are cloud-free, will also reclassify some cloudy pixels of thin clouds. This behaviour can be noticed in
 figure 13, where a high parameter value avoids the wrong reclassification of any of the cloudy pixels as cloud-free
 (left), while with a low parameter value, some of these pixels are reclassified (pink pixels in right image). We can
 also recognise again the behaviour of the red-blue test by looking at the yellow pixels. Some of the pixels are
@@ -217,7 +216,6 @@ different land-cover series, we decide that the best correlation coefficient par
 
 Variations on window size parameter
 -----------------------------------
-
 Another possible variation of the neighbourhood correlation test is the window size of the neighbourhood. It was noticed
 that the increase of this parameter highly increased the running time of the algorithm. Therefore, it is important to
 know if a small window size delivers good results. In this simulation, the red parameter is set to 3, the correlation
@@ -260,10 +258,9 @@ of the algorithm. Taking this into account, the value 11 is selected for the win
 
 Variations on reference pixels
 ------------------------------
-
-In the section `mat-met`_ of this project was explained that the neighbourhood correlation test compares the neighbourhoods
+In the section :ref:`mat-met` of this project was explained that the neighbourhood correlation test compares the neighbourhoods
 of the current pixel neighbourhood with the ten last images, without making any difference if the pixels in these neighbourhoods
-are cloud free or not. It was also briefly mentioned that this prevents the remaining of an error of commission over the
+are cloud-free or not. It was also briefly mentioned that this prevents the remaining of an error of commission over the
 images of the time-series. To understand how this works we will use the next example.
 
 In the left image we can see that the blue test has classified some pixels as cloudy, not only the shiny road, but also
@@ -273,7 +270,7 @@ which causes low reflectance pixel values. Therefore, the blue test identifies a
 the blue band for this area and mask the pixels as clouds.
 
 We can also observe in the image of date 2015-04-09 that the neighbourhood correlation test manages to reclassify some of
-these pixels as cloud free, especially the ones that are near the forest. A closer look at this pink band near the forest
+these pixels as cloud-free, especially the ones that are near the forest. A closer look at this pink band near the forest
 area reveals that the pixel width of it is around 6, which is approximately the half of the window size parameter that is
 set to 11. The neighbourhood correlation test is able to reclassify these pixels because it recognises a high correlation
 between the neighbourhoods thanks to the forest area, where the values don't variate as much between the two dates.
@@ -281,7 +278,7 @@ between the neighbourhoods thanks to the forest area, where the values don't var
 Nevertheless, there are still some pixels that the neighbourhood correlation test is not able to reclassify. Looking at
 the right image, we notice that a high amount of the pixels which were red in the left image are now reclassified.
 Therefore, the error decreases from one image to the next and completely disappears in the following one. This is only
-possible if we take the last ten images to compare the neighbourhoods of the pixels, since comparing only with cloud free
+possible if we take the last ten images to compare the neighbourhoods of the pixels, since comparing only with cloud-free
 pixels would imply that the comparison used by the neighbourhood correlation test for the cloud mask of the date 2015-04-19
 in this area near the forest will not be done using the image of the date 2015-04-09, because this area is masked as
 cloud, but with the previous image of the date 2015-03-23 and this is the image with the cloud shadow with low reflectance
@@ -300,7 +297,6 @@ the blue test will then continue taking the low values caused by the cloud shado
 
 Values of the parameters
 ------------------------
-
 In the next table, we can see the final values for each parameter.
 
 +----------------+-------------+
@@ -322,9 +318,8 @@ Table 3: Selected parameters for the tests
 
 Accuracy analysis
 -----------------
-
 Once set the parameter values for the three tests (see table 3), we are ready to run the algorithm on bigger images
-(2500 x 2500 m). The resulting clouds masks will be used for the accuracy analysis, like explained in `mat-met`_.
+(2500 x 2500 m). The resulting clouds masks will be used for the accuracy analysis, like explained in :ref:`mat-met`.
 Table 4 shows the overall accuracy and the commission and omission error together with the number of random points
 used, stratified by land cover class.
 
@@ -357,5 +352,5 @@ clouds, especially at the cloud boundaries.
 
 The class city shows the lowest overall accuracy. In this case, we find problematic bright objects like buildings which
 cause an error of commission. In most of the cases the neighbourhood correlation test is able to reclassify them, but
-sometimes the test doesn't succeed to do so, most of all at the begin of the time series where there are not many
+sometimes the test doesn't succeed to do so, most of all at the begin of the time-series where there are not many
 neighbourhoods to compare with.

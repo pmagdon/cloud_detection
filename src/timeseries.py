@@ -2,9 +2,9 @@
 
 def extract_timeseries(dic, band, row, column):
     """
-    Extract the time series for a given pixel and puts it in a dictionary.
+    Extract the time-series for a given pixel and put it in a dictionary.
 
-    Extract the values and the dates of the selected pixel and band from a dictionary with the values and the dates of
+    Extract the values and the dates of the selected pixel and band from a dictionary storing the values and the dates of
     the image and put them as lists in a new dictionary.
 
     :param object dic: The dictionary with the dates and the pixel values of the image as arrays.

@@ -6,7 +6,7 @@ The presence of clouds in satellite imagery obscures the view of Earth surface f
 information of the surface characteristic of clear-sky images [BrWZ15]_. This represents an impediment for remote sensing
 applications [ZCWH12]_ using automatic processing algorithms [HHVD10]_. For instance, the presence of clouds can cause false change
 detections or wrong land cover classification. Other cases where cloud presence can be problematic are surface
-studies like vegetation monitoring [HeCy09]_ or time series analysis. This leads to a reduced accuracy of the map products
+studies like vegetation monitoring [HeCy09]_ or time-series analysis. This leads to a reduced accuracy of the map products
 created using satellite imagery with cloud presence [BrWZ15]_. To avoid biased results, the erroneous values of the cloudy pixels should
 not be considered in these analysis [HeCy09]_. For excluding these values from the calculations, cloud masks are employed.
 An example of a cloud mask can be a raster file with boolean values: True for clear sky pixels and False for cloudy pixels. By multiplying
@@ -46,13 +46,13 @@ resolution but a limited number of bands and no thermal band (see: :ref:`Data-se
 A convenient cloud detection method for these conditions can be found in the literature. [HHVD10]_ develops a multi-temporal
 cloud detection algorithm on a pixel basis which makes use of a threshold on the reflectance temporal variation in the
 blue band to distinguish clouds from the surface. Two other tests are additionally run to assure a correct cloud identification, one of them
-using the reflectance values of the red band. The method uses a time series to compare the current pixel value with
+using the reflectance values of the red band. The method uses a time-series to compare the current pixel value with
 a clear sky reference value from a previous image [LyWF08]_. Multi-temporal cloud detection algorithms rely on the hypothesis
 that the reflectance of an area stays relatively stable in time in cloud-free conditions, while in presence of clouds,
 the reflectance values highly increase [ZCWH12]_.
 
 The satellite RapidEye includes the blue and the red spectral bands, has a high temporal resolution which allows the
-creation of a time series and a high spatial resolution which makes it adequate for a pixel by pixel analysis (See :ref:`Data-sets`).
+creation of a time-series and a high spatial resolution which makes it adequate for a pixel by pixel analysis (see :ref:`Data-sets`).
 Taking this into account, the multi-temporal cloud detection algorithm [HHVD10]_ represents a possibility to identify clouds in images
 of RapidEye. The objective of this project is the implementation and adaptation of this algorithm using the programming
 language Python.

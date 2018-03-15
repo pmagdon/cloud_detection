@@ -62,7 +62,7 @@ This criterion is expressed in the next formula:::
 
 Where pblue(D) and pblue(Dr) correspond to the pixel reflectance value in the blue band of the current and of the
 reference date. A pixel is tagged as cloudy only if the difference between these two values is above a certain threshold
-value: the blue parameter (See `Blue test`_). The value of this parameter varies depending on the
+value: the blue parameter (see `Blue test`_). The value of this parameter varies depending on the
 number of days between the two dates. D and Dr are expressed in days and if the images are close in time, the threshold
 value tends to be the same value as the blue parameter. In the case that the dates are separated by 30 days, the threshold
 parameter value will double. This allows some change in time in the surface reflection.
@@ -74,7 +74,7 @@ as clouds, even if their high reflectance value is not due to the presence of a 
 the blue spectral band test, another two tests are run after the first one, whose aim is to assure that the detected
 sudden increase of the reflectance value is really due to a cloud.
 
-The first of these two tests compares the increase of reflection in the blue band with the one in the red band (See `Red blue test`_).
+The first of these two tests compares the increase of reflection in the blue band with the one in the red band (see `Red blue test`_).
 If the increase of reflectance in the red band is much greater than the variation in the blue band, it is assumed that the
 identified variation in the blue band is not due to a cloud, but has other causes. This causes could be that a field is
 cropped or ploughed in agriculture landscapes or that vegetation dries quickly in forest landscapes, which all cause a
@@ -88,7 +88,7 @@ date.
 
 Another characteristic of clouds is that they don't stay at the same place and with the same shape for a long time. The
 reflectance of the pixel neighbourhood of the current image is compared with the reflectance of the same neighbourhood
-in one to ten images acquired before the current date (See `Neighbourhood correlation test`_). If the neighbourhood's
+in one to ten images acquired before the current date (see `Neighbourhood correlation test`_). If the neighbourhood's
 reflectances are similar, i.e. if their correlation coefficient is high, can only be due to the absence of a cloud.
 The reason for using the pixel reflections from the last ten images as reference and not from the last ten cloud-free
 pixels is to prevent that an error of commission remains through the images of the time series. This will be discussed
@@ -96,7 +96,7 @@ in more detail in the sub-section :ref:`reference-pixels`.
 
 These two tests are run only on the pixels that are tagged as clouds by the first test using the blue band reflectance
 increase criterion. They either assure the positive result and the pixel stays flagged as a cloud or they reclassify the
-pixel to cloud free. A pixel that is classified as cloudy by the blue band test is only finally tagged as a cloud if the
+pixel to cloud-free. A pixel that is classified as cloudy by the blue band test is only finally tagged as a cloud if the
 other two tests confirm this classification.
 
 The pixel with which we are comparing the current pixel value should be cloud-free because its aim is to be a reference
@@ -114,11 +114,12 @@ the next image.
 
 Documentation
 =============
+
 This algorithm was implemented using Python 3.6 in the IDE Pycharm. The functions were organised in seven different
 modules, each one of them storing one to more functions. For the documentation of this project `Sphinx  <http://www.sphinx-doc.org/en/master/>`_
 was used. Sphinx is a documentation generator written in Python that uses the markup language reStructuredText and its parsing and
 translating suite Docutils to convert the reStructuredText files into HTML websites and other output formats like PDF
-(See more under `Sphinx-README <https://github.com/sphinx-doc/sphinx/blob/master/README.rst>`_). The plaintext markup syntax
+(see more under `Sphinx-README <https://github.com/sphinx-doc/sphinx/blob/master/README.rst>`_). The plaintext markup syntax
 `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ was chosen among other markup languages for its ease to
 read and because it is the default markup language in the Python integrated tools of the IDE Pycharm.
 
@@ -163,9 +164,9 @@ cloud-free reference image we need to begin the analysis.
 
 Timeseries
 ----------
-Having the reflectance values of the series of images stored in a dictionary makes it possible to create a time series
+Having the reflectance values of the series of images stored in a dictionary makes it possible to create a time-series
 at pixel level that enables us to visually inspect the variations of the blue band reflectance values over the different
-dates. The next function returns a new time series dictionary with the dates and their corresponding values for a given
+dates. The next function returns a new time-series dictionary with the dates and their corresponding values for a given
 pixel. We build a plot using this values with help of the library `matplotlib <https://matplotlib.org/index.html>`_.
 An example of such a plot will be shown in the results part (see: :ref:`timeseries-plot`).
 
@@ -181,20 +182,20 @@ store the results of this analysis, i.e. the cloud masks.::
 The keys will correspond to the date of the image and the values to the cloud masks for each image. A cloud mask for
 an image is an array with the size of the image and with one value for each pixel cell. The possible values are:
 
-    * 1 for the pixels that are considered cloud free
+    * 1 for the pixels that are considered cloud-free
     * 0 for pixels tagged as cloud
     * -999 for the case that no data was found at this pixel of the image. Like explained in the description of the
       "`import-image`_" function, pixels of the image with value 0 are imported as no data (np.nan).
 
 The reason to create two dictionaries is that each one of them will store a different output. The dictionary_masked will
-store the cloud masks as arrays with the value True if the pixel is cloud free and False if it is cloud and the second
+store the cloud masks as arrays with the value True if the pixel is cloud-free and False if it is cloud and the second
 dictionary will store each one of the results of the three tests. This will help the adjustment of the function parameters
 for the three tests. How this works is explained in the `Array to raster`_ section.
 
 Search reference
 ----------------
 Like already mentioned, the reference values for the blue and for the red-blue test should correspond to the most
-recent cloud free pixel before the date that is currently analysed. A specific function was written to find these
+recent cloud-free pixel before the date that is currently analysed. A specific function was written to find these
 values, which can be found under the "search_reference" module.
 
 .. automodule:: src.search_reference
@@ -203,7 +204,7 @@ values, which can be found under the "search_reference" module.
 The module "multi_temporal_cloud_detection" is the main analysis module, since here is where we find the functions that
 correspond to the `Blue test`_, the `Red blue test`_ and the `Neighbourhood correlation test`_. The `Multi-temporal cloud detection function`_
 puts all these tests together and it is the function that determines if a given pixel is
-considered cloud or cloud free. In addition, we also find other two functions that the `Neighbourhood correlation test`_
+considered cloud or cloud-free. In addition, we also find other two functions that the `Neighbourhood correlation test`_
 uses: the function`Analysis window`_ that extracts the neighbourhood of a pixel into an array and the function `Correlation array`_
 that calculates the correlation coefficient between two arrays.
 
@@ -281,7 +282,7 @@ the cloud mask and setting the pixel value for the pixels tagged as cloud-free t
 allows us to get an idea of the accuracy of the cloud masks, but we can't know which specific result gave each test for
 each pixel. Being able to know this information can help us, for example, to understand the reason why a pixel that is a cloud was
 tagged as cloud-free by the algorithm. This could be because the blue test didn't identify the cloud or because it did,
-but one of the other two tests wrongly reclassified the pixel as cloud free.
+but one of the other two tests wrongly reclassified the pixel as cloud-free.
 
 Loading the multiband raster files into ArcMap allows us to visualize the results of each test for each pixel. This
 increases the understanding of how the algorithm works and which influence each one of the tests has on the final result.
@@ -293,7 +294,7 @@ development of the algorithm.
 
 The adjustment of the parameters was done using clips of the image with the size 500 x 500 m to avoid long processing
 time. Three surface classes were identified in the whole image and, for each class, three different clips were created.
-Each clip represents a time series. Once the parameters were set, the algorithm was run on bigger images of 2500 x 2500.
+Each clip represents a time-series. Once the parameters were set, the algorithm was run on bigger images of 2500 x 2500.
 
 Accuracy analysis
 =================
@@ -302,13 +303,13 @@ To calculate the accuracy of the multi-temporal cloud detection algorithm and de
 of the generated cloud masks are used to run a point based accuracy assessment, which is calculated for 3 different
 land cover classes: forest, city and field.
 
-For each one of these classes, the cloud masks for the 12 images of the size 2500 x 2500 from the same time series are analysed.
+For each one of these classes, the cloud masks for the 12 images of the size 2500 x 2500 from the same time-series are analysed.
 50 points per image are created using the tool `Create accuracy assessment points
 <https://desktop.arcgis.com/en/arcmap/latest/tools/spatial-analyst-toolbox/create-accuracy-assessment-points.htm>`_
 offered by ArcMap. The sampling strategy is set to "stratified random" to be sure that we get representative points for
 cloud and cloud-free areas. This condition causes that the tool sometimes creates more than 50 points, but never less.
 
-There are two types of images that we let out of the accuracy analysis: the first cloud-free image of each time series
+There are two types of images that we let out of the accuracy analysis: the first cloud-free image of each time-series
 and the images with only NA values, since they are ignored by the algorithm. The method used in the accuracy analysis is
 the visual assessment. The results of the cloud masks written in the attribute table are compared with the output of the algorithm.
 An :ref:`confusion-matrix` is generated with these values and the overall accuracy, the errors of commission and

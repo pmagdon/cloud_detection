@@ -19,6 +19,8 @@ def cloud_mask(date, blue_par, red_blue_par, window_size, cor_coeff, dic_values,
     :param int window_size: The size of a side of the analysis window, needs to be odd.
     :param object dic_values: The dictionary with the dates and the pixel values of the image saved as arrays.
     :param object dic_mask: The dictionary with the dates and the generated cloud mask for the already analysed images.
+    :param bool test_version: Indicates if the function should be run in test version mode or not.
+    :param dic_mask_test: The dictionary with the dates and the three generated arrays if the test version is activated.
     :return: Print the message "Dictionary masked of date ... updated" or in case that test version is activated, print
              the message "Both masked dictionaries of date ... updated".
     """

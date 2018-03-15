@@ -7,8 +7,8 @@ def array2raster(im_source, fname_nraster, pixel_width, pixel_height, dict, date
     """
     Create a raster file with one band based in an array stored in a dictionary.
 
-    Source: https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html. Open the image and read the image bounds
-    to define the origin in x and y for the output raster. Access the array of
+    Source: https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html.
+    Open the image and read the image bounds to define the origin in x and y for the output raster. Access the array of
     the given date, reverse it so that the tif looks like the array and store its shape. Fetch a driver based on the
     short name GTiff and create a new dataset with this  driver. The size of this dataset corresponds to the shape of
     the array. The number of bands is set to 1. Convert the pixel coordinates to map coordinates using the affine
@@ -52,10 +52,10 @@ def array2raster(im_source, fname_nraster, pixel_width, pixel_height, dict, date
 
 def array2raster_3b(im_source, fname_nraster, pixel_width, pixel_height, dict, date, nbands=3):
     """
-    Create a raster file with one band based in an array stored in a dictionary.
+    Create a raster file with three bands based in an array stored in a dictionary.
 
-    Source: https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html. Open the image and read the image bounds
-    to define the origin in x and y for the output raster. Access one of the
+    Source: https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html.
+    Open the image and read the image bounds to define the origin in x and y for the output raster. Access one of the
     three arrays and store its shape. Fetch a driver based on the short name GTiff and create a new dataset with this
     driver. The size of this dataset corresponds to the shape of the arrays. The number of bands is set to 3. Convert
     the pixel coordinates to map coordinates using the affine transformation. This transformation needs information
@@ -69,7 +69,8 @@ def array2raster_3b(im_source, fname_nraster, pixel_width, pixel_height, dict, d
     :param int pixel_height: The pixel height of the image.
     :param object dict: The dictionary where the cloud mask is stored.
     :param str date: The date of the image which cloud mask is converted to raster.
-    :return: Print the message "Array converted to raster".
+    :param str nbands: The number of bands of the raster, the standard value is 3.
+    :return: Print the message "3D array converted to multiband raster".
     """
     image = rasterio.open(im_source)
     bounds = image.bounds
@@ -106,4 +107,4 @@ def array2raster_3b(im_source, fname_nraster, pixel_width, pixel_height, dict, d
     outband_2.FlushCache()
     outband_3.FlushCache()
 
-    print("Array converted to raster")
+    print("3D array converted to multiband raster")

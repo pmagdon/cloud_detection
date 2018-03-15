@@ -19,8 +19,8 @@ def search_reference(dic_values, dic_mask, row, col, band_name):
     """
     key_images = [key for key, value in dic_mask.items()]
 
-    value_pixel = [value[row,col] for key, value in dic_values[band_name].items() if key in key_images]
-    mask_pixel = [value[row,col] for key, value in dic_mask.items() if key in key_images]
+    value_pixel = [value[row, col] for key, value in dic_values[band_name].items() if key in key_images]
+    mask_pixel = [value[row, col] for key, value in dic_mask.items() if key in key_images]
 
     indices_not_cloud = [index for index, value in enumerate(mask_pixel) if value == 1][-1]
 

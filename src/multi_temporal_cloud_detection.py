@@ -11,8 +11,8 @@ def blue_test(date, row, col, dic_values, dic_mask, blue_par):
     indicates cloud.
 
     Extract the most recent cloud free pixel value of the blue band and its corresponding date to a list. Extract the
-    current blue reflectance value of the pixel using the current date as the key of the dictionary. The pixel is defined by
-    its row and column in the array representing the image.
+    current blue reflectance value of the pixel using the current date as the key of the dictionary. The pixel is defined
+    by its row and column in the array representing the image.
 
     Calculate the mean reflectance using all the pixels of the reference and current image. Calculate the ratio between
     these two means and if this ratio is beyond 1.5 or under 0.5, increase the blue parameter value multiplying by 1.5.
@@ -31,7 +31,7 @@ def blue_test(date, row, col, dic_values, dic_mask, blue_par):
     :param object dic_values: The dictionary with the dates and the pixel values of the image saved as arrays.
     :param object dic_mask: The dictionary with the dates and the generated cloud mask for the already analysed images.
     :param int blue_par: The percentage of reflectance variation in the blue band used as threshold.
-    :return: True if the reflectance variation is bigger than a threshold (cloudy pixel), False if it is not (cloud free
+    :return: True if the reflectance variation is bigger than a threshold (cloudy pixel), False if it is not (cloud-free
              pixel), -999 if the current pixel value is np.nan.
     """
 
@@ -63,9 +63,9 @@ def blue_test(date, row, col, dic_values, dic_mask, blue_par):
 def red_blue_test(date, row, col, dic_values, dic_mask, red_blue_par):
     """
     Test the temporal variation of reflectance in the red band in comparison with the variation in the blue band. A
-    bigger variation in the red band (True) indicates cloud free pixel.
+    bigger variation in the red band (True) indicates cloud-free pixel.
 
-    Extract the reflectance value from the most recent cloud free pixel of the blue and of the red band.  Extract the
+    Extract the reflectance value from the most recent cloud-free pixel of the blue and of the red band.  Extract the
     reflectance value from the current pixel of the blue and of the red band. Calculate the temporal variation
     between the reference and the current value for both bands and compare this variation. If the temporal variation
     in the red band is over the temporal variation in the blue band multiplied by the blue band parameter, return True.
@@ -97,7 +97,7 @@ def red_blue_test(date, row, col, dic_values, dic_mask, red_blue_par):
 
 def analysis_window(dic, date, row, col, window_size, edge='nan'):
     """
-    Extract the values within an analysis window from an 2D-array.
+    Extract the values within an analysis window from a 2D-array.
 
     The location in the image array of the pixel for which the window is extracted is defined by the parameters row and
     col. This is the central pixel of the square-shaped window. Therefore, the sides of the window need to be odd.
@@ -111,9 +111,9 @@ def analysis_window(dic, date, row, col, window_size, edge='nan'):
     :param int row: The row of the image for a pixel.
     :param int col: The column of the image for a pixel.
     :param int window_size: The size of a side of the analysis window, needs to be odd.
-    :param str edge: The value of the edge of the image.
-    :return: The window as an array with the pixel reflectance values and nan values in the case that is over the limits of
-             the image.
+    :param str edge: The value of the edge of the image, the standard value is 'nan'.
+    :return: The window as an array with the pixel reflectance values and nan values in the case that is over the limits
+             of the image.
     """
 
     if window_size % 2 == 0:
@@ -165,8 +165,8 @@ def neigh_cor(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
     correlation coefficients is above a given threshold.
 
     Save the dates of the last 10 images previous to the date of the current analysed image. Use the analysis_window()
-    function to extract 11 arrays storing reflection value of the pixel and its neighbourhood. One array corresponds to
-    the pixel of the current date and the other 10 to the same pixel in the ten previous images. Use the cor_test3()
+    function to extract 11 arrays storing reflection values of the pixel and its neighbourhood. One array corresponds to
+    the pixel of the current date and the other 10 to the same pixel in the ten previous images. Use the cor_array()
     function to test if any of the ten calculated correlation coefficients between the array of the current date and the
     other ten arrays of the previous dates is above the correlation coefficient parameter. If this is the case, return
     True, else return False.
@@ -205,16 +205,16 @@ def neigh_cor(date, row, col, dic_values, dic_mask, window_size, cor_coeff):
 
 def mtcd(date, row, col, blue_par, red_blue_par, window_size, cor_coef, dic_values, dic_mask, test_version):
     """
-    Run the multi temporal cloud detection test to identify if a pixel is cloud free or not.
+    Run the multi-temporal cloud detection test to identify if a pixel is cloud free or not.
 
     If the test_version parameter is 0:
     Run the blue band test. If the blue band test returns -999, return -999; if it returns False (no high temporal
     variation in the blue band), return True (pixel is not a cloud); if it returns True (high temporal variation in the
-    blue band), run the red-blue band test and the correlation test and only if both return False (no high temporal
+    blue band), run the red-blue test and the neighbourhood correlation test and only if both return False (no high temporal
     variation in the red band and no high correlation between images neighbourhood), return True (pixel tagged as cloudy).
     If the test_version parameter is 1:
     Run the same procedure, but return 3 results, each one for each of the results of the 3 tests. If only the blue band
-    test is run, return three times this result.
+    test is run, return three times its result.
 
     :param str date: The date of the image which is currently analysed.
     :param int row: The row of the image for a pixel.
@@ -225,6 +225,7 @@ def mtcd(date, row, col, blue_par, red_blue_par, window_size, cor_coef, dic_valu
     :param int cor_coef: The correlation coefficient used as a threshold.
     :param object dic_values: The dictionary with the dates and the pixel values of the image saved as arrays.
     :param object dic_mask: The dictionary with the dates and the generated cloud mask for the already analysed images.
+    :param bool test_version: Indicates if the function should be run in test version mode or not.
     :return: With test version equal 0: -999 if the blue test is -999 (no data), True if the blue test is False or if
              the blue test is True but one of the other two tests is True (no cloud), False if the blue test is True and
              the other two tests are False (cloud).
